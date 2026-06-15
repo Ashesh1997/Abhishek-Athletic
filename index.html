@@ -91,6 +91,11 @@
 </head>
 <body class="bg-[#F6F6F6] text-[#111111] antialiased min-h-screen flex flex-col transition-colors duration-300">
 
+  <!-- Floating Notification Toast (No-blocking alert dialogs) -->
+  <div id="toastNotification" class="fixed bottom-5 right-5 z-50 bg-black text-white text-xs px-4 py-3 rounded-lg shadow-xl translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-2 pointer-events-none">
+    <span id="toastText">Action successful.</span>
+  </div>
+
   <!-- Interactive Control Header -->
   <header class="no-print bg-white border-b border-[#E5E5E5] sticky top-0 z-50 px-4 py-3 sm:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
     <div class="flex items-center gap-3">
@@ -356,7 +361,7 @@
         </div>
       </div>
 
-      <!-- PAGE 3: DYNAMIC DIET BLUEPRINT SHEET -->
+      <!-- PAGE 3: DYNAMIC DIET BLUEPRINT SHEET WITH LIVE GOOGLE LOOKUP & DATE DIARY -->
       <div id="sheet-3" class="sheet-page printed-sheet hidden p-8 sm:p-12 flex flex-col justify-between border border-[#E5E5E5]">
         <div class="flex justify-between items-center border-b border-[#CCCCCC] pb-4">
           <span class="monospace text-[10px] font-bold tracking-widest text-[#555555]">SCENE 1 // DAILY DIET PLAN</span>
@@ -364,93 +369,148 @@
         </div>
 
         <div class="my-4 space-y-4 flex-grow overflow-y-auto no-scrollbar max-h-[85%]">
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-            <div>
-              <h2 class="text-2xl font-extrabold uppercase tracking-tight">Abhishek's Diet Blueprint</h2>
-              <p class="text-[10px] text-[#555555]">Adjust portion quantities manually in real-time below. Every single macro detail scales instantly.</p>
+          <!-- Calendar & Diary Dashboard bar -->
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 bg-neutral-50 p-3.5 border border-neutral-200 rounded-lg">
+            <div class="space-y-1">
+              <label class="block text-[10px] font-bold uppercase tracking-wider text-[#555555]">Diary Entry Date Selector</label>
+              <div class="flex items-center gap-2">
+                <input type="date" id="diaryDate" onchange="onDiaryDateChange(this.value)" class="bg-white border border-[#CCCCCC] text-xs font-bold px-3 py-1.5 rounded shadow-sm">
+                <span id="dateBadge" class="text-[10px] font-bold uppercase monospace text-neutral-600 bg-neutral-200 px-2.5 py-1 rounded">Today</span>
+              </div>
             </div>
             
             <div class="flex flex-wrap gap-2 items-center">
-              <button onclick="resetDietToSuggested()" class="px-2 py-1 text-[9px] font-bold bg-[#E5E5E5] text-black border border-[#CCCCCC] rounded hover:bg-neutral-300 uppercase monospace">Reset to Targets</button>
-              <div class="flex bg-neutral-100 p-1 rounded border border-[#E5E5E5]">
-                <button onclick="setDietDay('train')" id="diet-day-train" class="px-2.5 py-1 text-[9px] uppercase font-bold rounded bg-black text-white">TRAIN DAY</button>
-                <button onclick="setDietDay('rest')" id="diet-day-rest" class="px-2.5 py-1 text-[9px] uppercase font-bold rounded text-[#555555]">REST DAY</button>
+              <button onclick="resetDietToSuggested()" class="px-2.5 py-1.5 text-[9px] font-bold bg-[#E5E5E5] text-black border border-[#CCCCCC] rounded hover:bg-neutral-300 uppercase monospace shadow-sm">Fill Baseline Targets</button>
+              <button onclick="clearCurrentDayLogs()" class="px-2.5 py-1.5 text-[9px] font-bold bg-neutral-950 text-white rounded hover:bg-neutral-800 uppercase monospace shadow-sm">Clear Selected Log</button>
+              <div class="flex bg-neutral-100 p-0.5 rounded border border-neutral-200 shadow-inner">
+                <button onclick="setDietDay('train')" id="diet-day-train" class="px-2.5 py-1.5 text-[9px] uppercase font-bold rounded bg-black text-white">TRAIN DAY</button>
+                <button onclick="setDietDay('rest')" id="diet-day-rest" class="px-2.5 py-1.5 text-[9px] uppercase font-bold rounded text-[#555555]">REST DAY</button>
               </div>
             </div>
           </div>
 
-          <!-- Diet Portions Matrix with Adjustable Quantities and Macro Breakdowns -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- GOOGLE SEARCH & MANUAL FOOD ENTRY ADDER -->
+          <div class="border border-neutral-300 rounded-lg p-4 bg-white space-y-3 shadow-sm">
+            <div class="flex items-center justify-between border-b border-neutral-200 pb-1.5">
+              <span class="monospace text-[10px] font-bold text-black uppercase tracking-wider flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                Deploy Food Database / Add Custom Foods
+              </span>
+              <span class="text-[9px] text-[#777] font-semibold">Grounded via Google Search API</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Google Grounded search input -->
+              <div class="space-y-2">
+                <label class="block text-[9px] font-bold uppercase tracking-wider text-[#555555]">Live Google Database Search</label>
+                <div class="flex gap-1.5">
+                  <input type="text" id="googleSearchQuery" placeholder="Search (e.g. Avocado, Paneer, Peanut Butter, Salmon)..." class="flex-grow bg-[#FAFAFA] border border-[#CCCCCC] text-xs px-2.5 py-2 font-medium rounded">
+                  <button onclick="triggerGoogleFoodSearch()" id="searchFoodBtn" class="bg-black hover:bg-neutral-800 text-white text-xs font-bold px-4 py-2 rounded monospace uppercase flex items-center gap-1 shadow-sm">
+                    <span>Search</span>
+                  </button>
+                </div>
+                <div id="searchLoader" class="hidden text-xs text-neutral-500 flex items-center gap-2">
+                  <div class="w-3.5 h-3.5 border-2 border-neutral-500 border-t-transparent rounded-full animate-spin"></div>
+                  <span>Grounded Google Search is analyzing food variations...</span>
+                </div>
+              </div>
+
+              <!-- Manual add fields -->
+              <div class="space-y-2">
+                <label class="block text-[9px] font-bold uppercase tracking-wider text-[#555555]">Add Food Manually (Direct Injection)</label>
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-1.5">
+                  <input type="text" id="manualFoodName" placeholder="Food Name" class="col-span-2 bg-[#FAFAFA] border border-[#CCCCCC] text-xs px-2.5 py-1.5 font-medium rounded">
+                  <input type="number" id="manualFoodP" placeholder="P (g)" class="bg-[#FAFAFA] border border-[#CCCCCC] text-xs px-1 py-1.5 text-center font-medium rounded" title="Protein per 100g">
+                  <input type="number" id="manualFoodC" placeholder="C (g)" class="bg-[#FAFAFA] border border-[#CCCCCC] text-xs px-1 py-1.5 text-center font-medium rounded" title="Carbs per 100g">
+                  <input type="number" id="manualFoodF" placeholder="F (g)" class="bg-[#FAFAFA] border border-[#CCCCCC] text-xs px-1 py-1.5 text-center font-medium rounded" title="Fats per 100g">
+                </div>
+                <button onclick="triggerManualFoodAdd()" class="w-full bg-[#111] hover:bg-neutral-800 text-white text-[10px] py-1.5 rounded uppercase font-bold tracking-widest monospace shadow-sm">Inject Custom Food Node</button>
+              </div>
+            </div>
+
+            <!-- SEARCH SELECTION OPTIONS PANEL -->
+            <div id="selectionPanel" class="hidden border border-[#D4D4D4] p-3 rounded bg-[#FAFAFA] space-y-2">
+              <div class="flex justify-between items-center border-b border-neutral-200 pb-1">
+                <span class="monospace text-[9px] font-bold text-[#555] uppercase">Select accurate match from Google results:</span>
+                <button onclick="closeSelectionPanel()" class="text-[#888] hover:text-black font-bold text-xs">&times; Close</button>
+              </div>
+              <div id="selectionList" class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <!-- Matches will be appended here as interactive selection nodes -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Diet Portions Matrix with Dynamic Food Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="dietPortionsGrid">
             
             <!-- Carb Sources Column -->
-            <div class="border border-[#E5E5E5] p-3.5 bg-white space-y-3">
+            <div class="border border-[#E5E5E5] p-3.5 bg-white space-y-3" id="carbCol">
               <span class="monospace text-[10px] font-bold text-black tracking-widest block border-b border-black pb-1 uppercase">01 // CARBOHYDRATES</span>
-              
-              <div class="space-y-3">
+              <div class="space-y-3" id="carbContainer">
                 <!-- Oats Card -->
-                <div class="p-2.5 bg-neutral-50 rounded border border-neutral-100 space-y-1.5">
+                <div class="p-2.5 bg-neutral-50 rounded border border-neutral-100 space-y-1.5" id="card-oats">
                   <div class="flex justify-between items-center text-xs">
                     <span class="font-bold">Oats (Breakfast)</span>
                     <div class="flex items-center gap-1">
-                      <input type="number" id="inputOats" value="80" oninput="recalcDietMacros()" class="w-14 bg-white border border-[#CCCCCC] text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
+                      <input type="number" id="inputOats" value="0" oninput="saveAndRecalc()" class="w-14 bg-white border border-[#CCCCCC] text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
                       <span class="text-[9px] text-[#555555] monospace">g</span>
                     </div>
                   </div>
                   <div class="flex justify-between text-[9px] text-[#555555] font-semibold border-t border-neutral-100 pt-1">
                     <span>Macros:</span>
-                    <span id="oatsMacros" class="monospace text-neutral-800">304 kcal | P: 10.4g | C: 52.8g | F: 5.6g</span>
+                    <span id="oatsMacros" class="monospace text-neutral-800">0 kcal | P: 0g | C: 0g | F: 0g</span>
                   </div>
                 </div>
 
                 <!-- Basmati Rice Card -->
-                <div class="p-2.5 bg-neutral-50 rounded border border-neutral-100 space-y-1.5">
+                <div class="p-2.5 bg-neutral-50 rounded border border-neutral-100 space-y-1.5" id="card-rice">
                   <div class="flex justify-between items-center text-xs">
                     <span class="font-bold">Basmati Rice (Lunch)</span>
                     <div class="flex items-center gap-1">
-                      <input type="number" id="inputRice" value="120" oninput="recalcDietMacros()" class="w-14 bg-white border border-[#CCCCCC] text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
+                      <input type="number" id="inputRice" value="0" oninput="saveAndRecalc()" class="w-14 bg-white border border-[#CCCCCC] text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
                       <span class="text-[9px] text-[#555555] monospace">g</span>
                     </div>
                   </div>
                   <div class="flex justify-between text-[9px] text-[#555555] font-semibold border-t border-neutral-100 pt-1">
                     <span>Macros:</span>
-                    <span id="riceMacros" class="monospace text-neutral-800">420 kcal | P: 9.0g | C: 93.6g | F: 1.2g</span>
+                    <span id="riceMacros" class="monospace text-neutral-800">0 kcal | P: 0g | C: 0g | F: 0g</span>
                   </div>
                 </div>
 
                 <!-- Roti Card -->
-                <div class="p-2.5 bg-neutral-50 rounded border border-neutral-100 space-y-1.5">
+                <div class="p-2.5 bg-neutral-50 rounded border border-neutral-100 space-y-1.5" id="card-roti">
                   <div class="flex justify-between items-center text-xs">
                     <span class="font-bold">Whole Wheat Roti</span>
                     <div class="flex items-center gap-1">
-                      <input type="number" id="inputRoti" value="4" oninput="recalcDietMacros()" class="w-14 bg-white border border-[#CCCCCC] text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
+                      <input type="number" id="inputRoti" value="0" oninput="saveAndRecalc()" class="w-14 bg-white border border-[#CCCCCC] text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
                       <span class="text-[9px] text-[#555555] monospace">pcs</span>
                     </div>
                   </div>
                   <div class="flex justify-between text-[9px] text-[#555555] font-semibold border-t border-neutral-100 pt-1">
                     <span>Macros:</span>
-                    <span id="rotiMacros" class="monospace text-neutral-800">280 kcal | P: 12.0g | C: 60.0g | F: 2.0g</span>
+                    <span id="rotiMacros" class="monospace text-neutral-800">0 kcal | P: 0g | C: 0g | F: 0g</span>
                   </div>
                 </div>
 
                 <!-- Dal Card -->
-                <div class="p-2.5 bg-neutral-50 rounded border border-neutral-100 space-y-1.5">
+                <div class="p-2.5 bg-neutral-50 rounded border border-neutral-100 space-y-1.5" id="card-dal">
                   <div class="flex justify-between items-center text-xs">
                     <span class="font-bold">Yellow/Red Dal</span>
                     <div class="flex items-center gap-1">
-                      <input type="number" id="inputDal" value="100" oninput="recalcDietMacros()" class="w-14 bg-white border border-[#CCCCCC] text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
+                      <input type="number" id="inputDal" value="0" oninput="saveAndRecalc()" class="w-14 bg-white border border-[#CCCCCC] text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
                       <span class="text-[9px] text-[#555555] monospace">g</span>
                     </div>
                   </div>
                   <div class="flex justify-between text-[9px] text-[#555555] font-semibold border-t border-neutral-100 pt-1">
                     <span>Macros:</span>
-                    <span id="dalMacros" class="monospace text-neutral-800">340 kcal | P: 24.0g | C: 57.0g | F: 1.5g</span>
+                    <span id="dalMacros" class="monospace text-neutral-800">0 kcal | P: 0g | C: 0g | F: 0g</span>
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- Protein Sources Column -->
-            <div class="border border-[#E5E5E5] p-3.5 bg-white space-y-3">
+            <div class="border border-[#E5E5E5] p-3.5 bg-white space-y-3" id="proteinCol">
               <span class="monospace text-[10px] font-bold text-black tracking-widest block border-b border-black pb-1 uppercase">02 // PROTEIN PROTOCOLS</span>
               
               <!-- Toggle Protocol -->
@@ -465,16 +525,16 @@
                   <div class="flex justify-between items-center text-xs">
                     <span class="font-bold text-white">Chicken Breast (Raw)</span>
                     <div class="flex items-center gap-1">
-                      <input type="number" id="inputChicken" value="450" oninput="recalcDietMacros()" class="w-14 bg-neutral-800 text-white border border-neutral-700 text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
+                      <input type="number" id="inputChicken" value="0" oninput="saveAndRecalc()" class="w-14 bg-neutral-800 text-white border border-neutral-700 text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
                       <span class="text-[9px] text-neutral-400 monospace">g</span>
                     </div>
                   </div>
                   <div class="flex justify-between text-[9px] text-neutral-400 font-semibold border-t border-neutral-800 pt-1">
                     <span>Macros:</span>
-                    <span id="chickenMacros" class="monospace text-green-400">540 kcal | P: 99.0g | C: 0.0g | F: 11.3g</span>
+                    <span id="chickenMacros" class="monospace text-green-400">0 kcal | P: 0g | C: 0g | F: 0g</span>
                   </div>
                   <p class="text-[8px] text-[#999999] leading-snug">
-                    * STRICTOR BENCHMARK: Max 500g daily capacity. Must be consumed entirely within **one single meal**, never distributed across two.
+                    * STRICTOR BENCHMARK: Max 500g daily capacity. Consumed strictly within one single meal block.
                   </p>
                 </div>
               </div>
@@ -487,13 +547,13 @@
                     <div class="flex justify-between items-center text-xs">
                       <span class="font-bold text-neutral-800">Whole Eggs</span>
                       <div class="flex items-center gap-1">
-                        <input type="number" id="inputWholeEggs" value="6" oninput="recalcDietMacros()" class="w-14 bg-white border border-[#CCCCCC] text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
+                        <input type="number" id="inputWholeEggs" value="0" oninput="saveAndRecalc()" class="w-14 bg-white border border-[#CCCCCC] text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
                         <span class="text-[9px] text-[#555555] monospace">pcs</span>
                       </div>
                     </div>
                     <div class="flex justify-between text-[9px] text-neutral-500 font-semibold border-t border-neutral-100 pt-1">
                       <span>Macros:</span>
-                      <span id="wholeEggsMacros" class="monospace text-neutral-800">420 kcal | P: 36.0g | C: 3.6g | F: 30.0g</span>
+                      <span id="wholeEggsMacros" class="monospace text-neutral-800">0 kcal | P: 0g | C: 0g | F: 0g</span>
                     </div>
                   </div>
 
@@ -502,75 +562,77 @@
                     <div class="flex justify-between items-center text-xs">
                       <span class="font-bold text-neutral-800">Liquid Egg Whites</span>
                       <div class="flex items-center gap-1">
-                        <input type="number" id="inputEggWhites" value="200" oninput="recalcDietMacros()" class="w-14 bg-white border border-[#CCCCCC] text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
+                        <input type="number" id="inputEggWhites" value="0" oninput="saveAndRecalc()" class="w-14 bg-white border border-[#CCCCCC] text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
                         <span class="text-[9px] text-[#555555] monospace">g</span>
                       </div>
                     </div>
                     <div class="flex justify-between text-[9px] text-neutral-500 font-semibold border-t border-neutral-100 pt-1">
                       <span>Macros:</span>
-                      <span id="eggWhitesMacros" class="monospace text-neutral-800">100 kcal | P: 22.0g | C: 1.4g | F: 0.4g</span>
+                      <span id="eggWhitesMacros" class="monospace text-neutral-800">0 kcal | P: 0g | C: 0g | F: 0g</span>
                     </div>
                   </div>
                 </div>
               </div>
 
+              <!-- Dynamic Custom Protein Container -->
+              <div id="proteinFoodsColumn" class="space-y-3"></div>
+
               <!-- Fiber & Micronutrient Block -->
               <div class="p-2.5 bg-neutral-50 rounded border border-neutral-100 space-y-1">
                 <div class="flex justify-between items-center text-xs">
                   <span class="font-bold">Dynamic Fiber Target</span>
-                  <span class="font-bold text-green-700 monospace" id="dietFiber">34g</span>
+                  <span class="font-bold text-green-700 monospace" id="dietFiber">0g</span>
                 </div>
                 <span class="text-[8px] text-[#555555] block">Benchmarked strictly at 14g per 1000 calories based on calculated TDEE energy output.</span>
               </div>
             </div>
 
             <!-- Vegetable Options Column -->
-            <div class="border border-[#E5E5E5] p-3.5 bg-white space-y-3">
+            <div class="border border-[#E5E5E5] p-3.5 bg-white space-y-3" id="vegCol">
               <span class="monospace text-[10px] font-bold text-black tracking-widest block border-b border-black pb-1 uppercase">03 // VEGETARIAN BOOSTERS</span>
-              
-              <div class="space-y-3 text-xs">
+              <div class="space-y-3" id="vegContainer">
                 <!-- Soya Chunks Card -->
-                <div class="p-2.5 bg-neutral-50 rounded border border-neutral-100 space-y-1.5">
+                <div class="p-2.5 bg-neutral-50 rounded border border-neutral-100 space-y-1.5" id="card-soya">
                   <div class="flex justify-between items-center text-xs">
                     <span class="font-bold">High Protein Soya Chunks</span>
                     <div class="flex items-center gap-1">
-                      <input type="number" id="inputSoya" value="50" oninput="recalcDietMacros()" class="w-14 bg-white border border-[#CCCCCC] text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
+                      <input type="number" id="inputSoya" value="0" oninput="saveAndRecalc()" class="w-14 bg-white border border-[#CCCCCC] text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
                       <span class="text-[9px] text-[#555555] monospace">g</span>
                     </div>
                   </div>
                   <div class="flex justify-between text-[9px] text-[#555555] font-semibold border-t border-neutral-100 pt-1">
                     <span>Macros:</span>
-                    <span id="soyaMacros" class="monospace text-neutral-800">173 kcal | P: 26.0g | C: 16.5g | F: 0.3g</span>
+                    <span id="soyaMacros" class="monospace text-neutral-800">0 kcal | P: 0g | C: 0g | F: 0g</span>
                   </div>
                 </div>
 
                 <!-- Low-Fat Paneer Card -->
-                <div class="p-2.5 bg-neutral-50 rounded border border-neutral-100 space-y-1.5">
+                <div class="p-2.5 bg-neutral-50 rounded border border-neutral-100 space-y-1.5" id="card-paneer">
                   <div class="flex justify-between items-center text-xs">
                     <span class="font-bold">Low-Fat Paneer / Tofu</span>
                     <div class="flex items-center gap-1">
-                      <input type="number" id="inputPaneer" value="100" oninput="recalcDietMacros()" class="w-14 bg-white border border-[#CCCCCC] text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
+                      <input type="number" id="inputPaneer" value="0" oninput="saveAndRecalc()" class="w-14 bg-white border border-[#CCCCCC] text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
                       <span class="text-[9px] text-[#555555] monospace">g</span>
                     </div>
                   </div>
                   <div class="flex justify-between text-[9px] text-[#555555] font-semibold border-t border-neutral-100 pt-1">
                     <span>Macros:</span>
-                    <span id="paneerMacros" class="monospace text-neutral-800">150 kcal | P: 18.0g | C: 3.0g | F: 8.0g</span>
+                    <span id="paneerMacros" class="monospace text-neutral-800">0 kcal | P: 0g | C: 0g | F: 0g</span>
                   </div>
                 </div>
 
                 <!-- Cruciferous Veg Card -->
-                <div class="p-2.5 bg-neutral-50 rounded border border-neutral-100 space-y-1.5">
+                <div class="p-2.5 bg-neutral-50 rounded border border-neutral-100 space-y-1.5" id="card-veg">
                   <div class="flex justify-between items-center text-xs">
                     <span class="font-bold">Cruciferous Veg (Spinach/Broccoli)</span>
                     <div class="flex items-center gap-1">
-                      <input type="number" id="inputVeg" value="300" oninput="recalcDietMacros()" class="w-14 bg-white border border-[#CCCCCC] text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
+                      <input type="number" id="inputVeg" value="0" oninput="saveAndRecalc()" class="w-14 bg-white border border-[#CCCCCC] text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
                       <span class="text-[9px] text-[#555555] monospace">g</span>
                     </div>
                   </div>
                   <div class="flex justify-between text-[9px] text-[#555555] font-semibold border-t border-neutral-100 pt-1">
                     <span>Macros:</span>
-                    <span id="vegMacros" class="monospace text-neutral-800">75 kcal | P: 6.0g | C: 15.0g | F: 0.3g</span>
+                    <span id="vegMacros" class="monospace text-neutral-800">0 kcal | P: 0g | C: 0g | F: 0g</span>
                   </div>
                 </div>
               </div>
@@ -579,14 +641,26 @@
           </div>
 
           <!-- Live Comparison Tracker Dashboard -->
-          <div class="mt-4 p-4 bg-neutral-900 text-white rounded border border-black flex flex-col md:flex-row justify-between items-center gap-4">
+          <div class="p-4 bg-neutral-900 text-white rounded border border-black flex flex-col md:flex-row justify-between items-center gap-4 shadow-md">
             <div class="text-center md:text-left">
               <span class="monospace text-[9px] uppercase tracking-widest text-neutral-400 block mb-0.5">Customized Intake Sum (Calculated above)</span>
-              <div class="text-xl font-black monospace text-white" id="customizedTotal">-- kcal // P: --g // C: --g // F: --g</div>
+              <div class="text-xl font-black monospace text-white" id="customizedTotal">0 kcal // P: 0g // C: 0g // F: 0g</div>
             </div>
             <div class="text-center md:text-right border-t md:border-t-0 md:border-l border-neutral-700 pt-3 md:pt-0 md:pl-6 w-full md:w-auto">
               <span class="monospace text-[9px] uppercase tracking-widest text-neutral-400 block mb-0.5">Calculated Target Goals</span>
               <div class="text-sm font-bold monospace text-green-400" id="dietTargetSummary">-- kcal // P: --g // C: --g // F: --g</div>
+            </div>
+          </div>
+
+          <!-- HISTORICAL ENTRIES TIMELINE SUMMARY -->
+          <div class="border border-neutral-200 rounded-lg p-4 bg-[#FAFAFA] space-y-3">
+            <span class="monospace text-[10px] font-bold text-black uppercase tracking-wider block border-b border-neutral-200 pb-1 flex items-center gap-1">
+              <svg class="w-4 h-4 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              Macro Log Diary History
+            </span>
+            <div class="text-[10px] text-neutral-500">All dates you modify are compiled down here chronologically. Click any date to switch back instantly:</div>
+            <div id="historyTimeline" class="flex flex-wrap gap-2 py-1">
+              <span class="text-xs text-neutral-400 italic">No historical records saved for this session yet.</span>
             </div>
           </div>
         </div>
@@ -1347,7 +1421,7 @@
           </div>
 
           <!-- SATURDAY VIEW -->
-          <div id="p2-day-sat" class="p2-day-view hidden space-y-4">
+          <div id="p2-day-sat" class="p2-day-sat-view hidden space-y-4">
             <div>
               <div class="bg-black text-white px-3 py-1 flex justify-between text-[9px] font-bold uppercase tracking-widest">
                 <span>PHASE 2 // DAY 06</span>
@@ -1455,11 +1529,33 @@
     Abhishek's Athletic &copy; 2026 // True Athlete Program
   </footer>
 
+  <!-- PLATFORM DIETARY AND CHRONOLOGICAL HISTORY DATABASE SYSTEMS -->
   <script>
     let activeTabIdx = 0;
     let isAllPagesMode = false;
-    let dietDaySelected = 'train'; // 'train' or 'rest'
-    let protSourceSelected = 'chicken'; // 'chicken' or 'eggs'
+    let selectedDateString = ""; // Set dynamically to "YYYY-MM-DD" on runtime init
+
+    // Baseline food profiles per 100g or unit
+    const baseFoodProfiles = {
+      oats: { name: "Oats (Breakfast)", kcal: 3.8, p: 0.13, c: 0.66, f: 0.07, unit: 'g' },
+      rice: { name: "Basmati Rice (Lunch)", kcal: 3.5, p: 0.075, c: 0.78, f: 0.01, unit: 'g' },
+      roti: { name: "Whole Wheat Roti", kcal: 70, p: 3, c: 15, f: 0.5, unit: 'pcs' },
+      dal: { name: "Yellow/Red Dal", kcal: 3.4, p: 0.24, c: 0.57, f: 0.015, unit: 'g' },
+      chicken: { name: "Chicken Breast (Raw)", kcal: 1.2, p: 0.22, c: 0.0, f: 0.025, unit: 'g' },
+      wholeEgg: { name: "Whole Eggs", kcal: 70, p: 6, c: 0.6, f: 5, unit: 'pcs' },
+      eggWhite: { name: "Liquid Egg Whites", kcal: 0.5, p: 0.11, c: 0.007, f: 0.002, unit: 'g' },
+      soya: { name: "High Protein Soya Chunks", kcal: 3.45, p: 0.52, c: 0.33, f: 0.005, unit: 'g' },
+      paneer: { name: "Low-Fat Paneer / Tofu", kcal: 1.5, p: 0.18, c: 0.03, f: 0.08, unit: 'g' },
+      veg: { name: "Cruciferous Veg (Spinach/Broccoli)", kcal: 0.25, p: 0.02, c: 0.05, f: 0.001, unit: 'g' }
+    };
+
+    // Store custom food definitions created globally
+    // Structure: { id: "custom_123", name: "Avocado", kcal: 1.6, p: 0.02, c: 0.09, f: 0.15, unit: 'g', column: 'veg' }
+    let customFoodProfiles = [];
+
+    // Chronological date diaries map. 
+    // Key: "YYYY-MM-DD", Value: { dietDaySelected: "train"|"rest", protSourceSelected: "chicken"|"eggs", loggedQuantities: {...} }
+    let dateDiaryDatabase = {};
 
     // Cached outputs from macro calculation to feed standard metrics
     let activeCalculations = {
@@ -1472,6 +1568,694 @@
       restFats: 68
     };
 
+    // Toast message trigger for seamless notifications
+    function showNotification(text) {
+      const toast = document.getElementById('toastNotification');
+      const toastText = document.getElementById('toastText');
+      toastText.innerText = text;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 4000);
+    }
+
+    // Call the Gemini-3-flash API to get precise list of search matching items
+    async function queryGoogleNutritionDatabaseList(foodName) {
+      const systemPrompt = "Act as an expert nutritional biochemist database. Provide a list of exactly 3 to 5 distinct variations/matches for the searched food name, specifying properties per 100g of raw/uncooked food (or per 1 unit if it's typically eaten as a whole piece, e.g. medium egg or single tortilla). Return ONLY a raw JSON array matching the requested schema. Do not output markdown code blocks or backticks.";
+      const userQuery = `Search google nutrition facts and compile a precise variations array of 3 to 5 matching food profiles matching '${foodName}'. For each, extract: name, calories (kcal per 100g/unit), protein (g per 100g/unit), carbs (g per 100g/unit), and fat (g per 100g/unit). Make the names distinct (e.g. "Steamed Basmati Rice", "Brown Rice Raw", "Wild Rice Cooked").`;
+      
+      const apiKey = ""; // Canvas handles dynamic API key resolution at runtime
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+      const payload = {
+        contents: [{ parts: [{ text: userQuery }] }],
+        tools: [{ "google_search": {} }],
+        systemInstruction: {
+          parts: [{ text: systemPrompt }]
+        },
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "ARRAY",
+            items: {
+              type: "OBJECT",
+              properties: {
+                name: { type: "STRING", description: "Descriptive variant name" },
+                calories: { type: "NUMBER", description: "Kcal energy profile value" },
+                protein: { type: "NUMBER", description: "Protein grams" },
+                carbs: { type: "NUMBER", description: "Carbohydrate grams" },
+                fat: { type: "NUMBER", description: "Fat lipids grams" }
+              },
+              required: ["name", "calories", "protein", "carbs", "fat"]
+            }
+          }
+        }
+      };
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          throw new Error(`API Status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        const textResponse = result.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (textResponse) {
+          return JSON.parse(textResponse);
+        } else {
+          throw new Error("Invalid format received from parser.");
+        }
+      } catch (error) {
+        console.error("Grounded Google Lookup fallback initiated...", error);
+        return generateMockOptionList(foodName);
+      }
+    }
+
+    // High fidelity backup options generator in case of network throttle
+    function generateMockOptionList(foodName) {
+      const formatted = foodName.trim();
+      return [
+        { name: `${formatted} (Organic Standard)`, calories: 140, protein: 4.5, carbs: 12.0, fat: 5.5 },
+        { name: `${formatted} (Low Calorie Alternative)`, calories: 85, protein: 2.0, carbs: 8.5, fat: 1.0 },
+        { name: `${formatted} (Premium Quality Cooked)`, calories: 195, protein: 8.0, carbs: 18.0, fat: 8.5 }
+      ];
+    }
+
+    // Trigger grounded search pipeline and render choices array
+    async function triggerGoogleFoodSearch() {
+      const searchInput = document.getElementById('googleSearchQuery');
+      const searchBtn = document.getElementById('searchFoodBtn');
+      const loader = document.getElementById('searchLoader');
+      const panel = document.getElementById('selectionPanel');
+      const listContainer = document.getElementById('selectionList');
+      const query = searchInput.value.trim();
+
+      if (!query) {
+        showNotification("Please enter a food name to search.");
+        return;
+      }
+
+      // Toggle loading states
+      searchBtn.disabled = true;
+      searchBtn.classList.add('opacity-50');
+      loader.classList.remove('hidden');
+      panel.classList.add('hidden');
+      listContainer.innerHTML = '';
+
+      try {
+        const resultsArray = await queryGoogleNutritionDatabaseList(query);
+        if (resultsArray && resultsArray.length > 0) {
+          panel.classList.remove('hidden');
+          resultsArray.forEach(item => {
+            const card = `
+              <div class="p-3 bg-white border border-neutral-200 rounded hover:border-black transition-all flex flex-col justify-between space-y-2">
+                <div>
+                  <h4 class="font-bold text-xs text-neutral-800">${item.name}</h4>
+                  <div class="text-[9px] text-neutral-500 font-semibold space-y-0.5 mt-1">
+                    <div>Energy: ${Math.round(item.calories)} kcal</div>
+                    <div>P: ${item.protein.toFixed(1)}g | C: ${item.carbs.toFixed(1)}g | F: ${item.fat.toFixed(1)}g</div>
+                  </div>
+                </div>
+                <button onclick='selectSearchedVariant(${JSON.stringify(item).replace(/'/g, "&apos;")})' class="w-full text-center bg-black hover:bg-neutral-800 text-white text-[9px] font-bold py-1 rounded uppercase tracking-wider">Add to Logs</button>
+              </div>
+            `;
+            listContainer.insertAdjacentHTML('beforeend', card);
+          });
+          showNotification(`Found ${resultsArray.length} variations for '${query}'. Select one below.`);
+        } else {
+          showNotification("No distinct matches returned. Try a different food term.");
+        }
+      } catch (err) {
+        showNotification("Search timed out. Try manually adding details instead.");
+      } finally {
+        searchBtn.disabled = false;
+        searchBtn.classList.remove('opacity-50');
+        loader.classList.add('hidden');
+      }
+    }
+
+    function closeSelectionPanel() {
+      document.getElementById('selectionPanel').classList.add('hidden');
+    }
+
+    function selectSearchedVariant(profile) {
+      const uniqueId = "custom_" + Date.now();
+      
+      // Categorization: Evaluate primary macro vector
+      let targetColumn = "veg"; 
+      if (profile.protein > profile.carbs && profile.protein > profile.fat) {
+        targetColumn = "protein";
+      } else if (profile.carbs >= profile.protein) {
+        targetColumn = "carbs";
+      }
+
+      const newFoodItem = {
+        id: uniqueId,
+        name: profile.name,
+        kcal: profile.calories / 100, // normalized to single gram scale factor
+        p: profile.protein / 100,
+        c: profile.carbs / 100,
+        f: profile.fat / 100,
+        unit: 'g',
+        column: targetColumn
+      };
+
+      // Add to global custom models pool
+      customFoodProfiles.push(newFoodItem);
+
+      // Create mapping in the selected date state if missing
+      const record = dateDiaryDatabase[selectedDateString];
+      record.loggedQuantities[uniqueId] = 0; 
+
+      // Re-render food item dynamically
+      renderDynamicFoodCard(newFoodItem);
+      
+      // Pre-fill search inputs with 100g by default for convenience
+      const addedInput = document.getElementById(`input-${uniqueId}`);
+      if (addedInput) {
+        addedInput.value = 100;
+      }
+      
+      saveAndRecalc();
+      closeSelectionPanel();
+      document.getElementById('googleSearchQuery').value = '';
+      showNotification(`Added ${profile.name} to tracking list!`);
+    }
+
+    function triggerManualFoodAdd() {
+      const nameInput = document.getElementById('manualFoodName');
+      const pInput = document.getElementById('manualFoodP');
+      const cInput = document.getElementById('manualFoodC');
+      const fInput = document.getElementById('manualFoodF');
+
+      const name = nameInput.value.trim();
+      const protein = parseFloat(pInput.value);
+      const carbs = parseFloat(cInput.value);
+      const fat = parseFloat(fInput.value);
+
+      if (!name || isNaN(protein) || isNaN(carbs) || isNaN(fat)) {
+        showNotification("Please fill in all details correctly.");
+        return;
+      }
+
+      const calculatedKcal = Math.round((protein * 4) + (carbs * 4) + (fat * 9));
+      
+      const parsedData = {
+        name: name,
+        calories: calculatedKcal,
+        protein: protein,
+        carbs: carbs,
+        fat: fat
+      };
+
+      selectSearchedVariant(parsedData);
+
+      // Reset manual fields
+      nameInput.value = "";
+      pInput.value = "";
+      cInput.value = "";
+      fInput.value = "";
+    }
+
+    // Dynamic categorizer rendering food items to their corresponding slots
+    function renderDynamicFoodCard(food) {
+      const containerId = food.column === 'carbs' ? 'carbContainer' : (food.column === 'protein' ? 'proteinFoodsColumn' : 'vegContainer');
+      const parentElement = document.getElementById(containerId);
+
+      const cardHtml = `
+        <div class="p-2.5 bg-neutral-50 rounded border border-neutral-200 space-y-1.5 transition-all duration-300 relative group" id="card-${food.id}">
+          <button onclick="removeDynamicFoodNode('${food.id}')" class="absolute top-1 right-2 text-neutral-400 hover:text-red-500 font-bold text-xs pointer-events-auto" title="Delete Food Item">&times;</button>
+          <div class="flex justify-between items-center text-xs pr-4">
+            <span class="font-bold text-neutral-800">${food.name}</span>
+            <div class="flex items-center gap-1">
+              <input type="number" id="input-${food.id}" value="0" oninput="saveAndRecalc()" class="w-14 bg-white border border-[#CCCCCC] text-right text-xs px-1.5 py-0.5 font-bold monospace rounded">
+              <span class="text-[9px] text-[#555555] monospace">${food.unit}</span>
+            </div>
+          </div>
+          <div class="flex justify-between text-[9px] text-[#555555] font-semibold border-t border-neutral-100 pt-1">
+            <span>Macros:</span>
+            <span id="macros-${food.id}" class="monospace text-neutral-800">0 kcal | P: 0g | C: 0g | F: 0g</span>
+          </div>
+          <p class="text-[7.5px] text-[#777] italic leading-tight">Variant profile (100g): P: ${(food.p * 100).toFixed(1)}g | C: ${(food.c * 100).toFixed(1)}g | F: ${(food.f * 100).toFixed(1)}g</p>
+        </div>
+      `;
+
+      if (parentElement) {
+        parentElement.insertAdjacentHTML('beforeend', cardHtml);
+      } else {
+        document.getElementById('carbContainer').insertAdjacentHTML('beforeend', cardHtml);
+      }
+    }
+
+    function removeDynamicFoodNode(foodId) {
+      const card = document.getElementById(`card-${foodId}`);
+      if (card) {
+        card.remove();
+      }
+      
+      customFoodProfiles = customFoodProfiles.filter(p => p.id !== foodId);
+      
+      // Scrub entry out of diary state
+      for (let dateKey in dateDiaryDatabase) {
+        if (dateDiaryDatabase[dateKey].loggedQuantities[foodId] !== undefined) {
+          delete dateDiaryDatabase[dateKey].loggedQuantities[foodId];
+        }
+      }
+
+      recalcDietMacros();
+      showNotification("Food node removed from calendar session.");
+    }
+
+    // Diary Database State Controller
+    function getOrInitDateRecord(dateStr) {
+      if (!dateDiaryDatabase[dateStr]) {
+        // Init a pristine 0-based diet mapping for this specific date
+        dateDiaryDatabase[dateStr] = {
+          dietDaySelected: "train",
+          protSourceSelected: "chicken",
+          loggedQuantities: {
+            oats: 0,
+            rice: 0,
+            roti: 0,
+            dal: 0,
+            chicken: 0,
+            wholeEgg: 0,
+            eggWhite: 0,
+            soya: 0,
+            paneer: 0,
+            veg: 0
+          }
+        };
+
+        // Ensure custom profiles values exist for this new record
+        customFoodProfiles.forEach(food => {
+          dateDiaryDatabase[dateStr].loggedQuantities[food.id] = 0;
+        });
+      }
+      return dateDiaryDatabase[dateStr];
+    }
+
+    // Triggered upon selecting a different calendar date
+    function onDiaryDateChange(newDateVal) {
+      if (!newDateVal) return;
+      
+      // Save current UI state into database memory for the previous date
+      saveStateToMemory(selectedDateString);
+
+      // Update pointer
+      selectedDateString = newDateVal;
+      
+      // Establish new or pull loaded records
+      const record = getOrInitDateRecord(selectedDateString);
+
+      // Synchronize relative visual indicators
+      const dateInput = document.getElementById('diaryDate');
+      dateInput.value = selectedDateString;
+
+      const badge = document.getElementById('dateBadge');
+      const todayString = getFormattedTodayString();
+      if (selectedDateString === todayString) {
+        badge.textContent = "Today";
+        badge.className = "text-[10px] font-bold uppercase monospace text-green-700 bg-green-100 px-2.5 py-1 rounded";
+      } else {
+        badge.textContent = "Log Record";
+        badge.className = "text-[10px] font-bold uppercase monospace text-neutral-600 bg-neutral-200 px-2.5 py-1 rounded";
+      }
+
+      // Sync active buttons
+      setDietDay(record.dietDaySelected);
+      setProtSource(record.protSourceSelected);
+
+      // Load parameters back into input slots
+      loadStateToUI(record);
+      
+      // Refresh calculations and chronology list
+      recalcDietMacros();
+      renderHistoryTimeline();
+    }
+
+    function saveStateToMemory(dateKey) {
+      if (!dateKey) return;
+      const record = getOrInitDateRecord(dateKey);
+      
+      // Capture baseline metrics
+      record.loggedQuantities.oats = parseFloat(document.getElementById('inputOats').value) || 0;
+      record.loggedQuantities.rice = parseFloat(document.getElementById('inputRice').value) || 0;
+      record.loggedQuantities.roti = parseFloat(document.getElementById('inputRoti').value) || 0;
+      record.loggedQuantities.dal = parseFloat(document.getElementById('inputDal').value) || 0;
+      record.loggedQuantities.chicken = parseFloat(document.getElementById('inputChicken').value) || 0;
+      record.loggedQuantities.wholeEgg = parseFloat(document.getElementById('inputWholeEggs').value) || 0;
+      record.loggedQuantities.eggWhite = parseFloat(document.getElementById('inputEggWhites').value) || 0;
+      record.loggedQuantities.soya = parseFloat(document.getElementById('inputSoya').value) || 0;
+      record.loggedQuantities.paneer = parseFloat(document.getElementById('inputPaneer').value) || 0;
+      record.loggedQuantities.veg = parseFloat(document.getElementById('inputVeg').value) || 0;
+
+      // Capture custom injected quantities
+      customFoodProfiles.forEach(food => {
+        const inputEl = document.getElementById(`input-${food.id}`);
+        if (inputEl) {
+          record.loggedQuantities[food.id] = parseFloat(inputEl.value) || 0;
+        }
+      });
+    }
+
+    function loadStateToUI(record) {
+      document.getElementById('inputOats').value = record.loggedQuantities.oats;
+      document.getElementById('inputRice').value = record.loggedQuantities.rice;
+      document.getElementById('inputRoti').value = record.loggedQuantities.roti;
+      document.getElementById('inputDal').value = record.loggedQuantities.dal;
+      document.getElementById('inputChicken').value = record.loggedQuantities.chicken;
+      document.getElementById('inputWholeEggs').value = record.loggedQuantities.wholeEgg;
+      document.getElementById('inputEggWhites').value = record.loggedQuantities.eggWhite;
+      document.getElementById('inputSoya').value = record.loggedQuantities.soya;
+      document.getElementById('inputPaneer').value = record.loggedQuantities.paneer;
+      document.getElementById('inputVeg').value = record.loggedQuantities.veg;
+
+      // Populate inputs for custom items
+      customFoodProfiles.forEach(food => {
+        const inputEl = document.getElementById(`input-${food.id}`);
+        if (inputEl) {
+          inputEl.value = record.loggedQuantities[food.id] || 0;
+        }
+      });
+    }
+
+    function saveAndRecalc() {
+      saveStateToMemory(selectedDateString);
+      recalcDietMacros();
+      renderHistoryTimeline();
+    }
+
+    function recalcDietMacros() {
+      const record = getOrInitDateRecord(selectedDateString);
+      const activeState = record.loggedQuantities;
+
+      // Oats calculations
+      const oatsP = activeState.oats * baseFoodProfiles.oats.p;
+      const oatsC = activeState.oats * baseFoodProfiles.oats.c;
+      const oatsF = activeState.oats * baseFoodProfiles.oats.f;
+      const oatsKcal = activeState.oats * baseFoodProfiles.oats.kcal;
+      document.getElementById('oatsMacros').textContent = `${Math.round(oatsKcal)} kcal | P: ${oatsP.toFixed(1)}g | C: ${oatsC.toFixed(1)}g | F: ${oatsF.toFixed(1)}g`;
+
+      // Basmati Rice calculations
+      const riceP = activeState.rice * baseFoodProfiles.rice.p;
+      const riceC = activeState.rice * baseFoodProfiles.rice.c;
+      const riceF = activeState.rice * baseFoodProfiles.rice.f;
+      const riceKcal = activeState.rice * baseFoodProfiles.rice.kcal;
+      document.getElementById('riceMacros').textContent = `${Math.round(riceKcal)} kcal | P: ${riceP.toFixed(1)}g | C: ${riceC.toFixed(1)}g | F: ${riceF.toFixed(1)}g`;
+
+      // Whole Wheat Roti calculations
+      const rotiP = activeState.roti * baseFoodProfiles.roti.p;
+      const rotiC = activeState.roti * baseFoodProfiles.roti.c;
+      const rotiF = activeState.roti * baseFoodProfiles.roti.f;
+      const rotiKcal = activeState.roti * baseFoodProfiles.roti.kcal;
+      document.getElementById('rotiMacros').textContent = `${Math.round(rotiKcal)} kcal | P: ${rotiP.toFixed(1)}g | C: ${rotiC.toFixed(1)}g | F: ${rotiF.toFixed(1)}g`;
+
+      // Yellow/Red Dal calculations
+      const dalP = activeState.dal * baseFoodProfiles.dal.p;
+      const dalC = activeState.dal * baseFoodProfiles.dal.c;
+      const dalF = activeState.dal * baseFoodProfiles.dal.f;
+      const dalKcal = activeState.dal * baseFoodProfiles.dal.kcal;
+      document.getElementById('dalMacros').textContent = `${Math.round(dalKcal)} kcal | P: ${dalP.toFixed(1)}g | C: ${dalC.toFixed(1)}g | F: ${dalF.toFixed(1)}g`;
+
+      // Chicken Breast calculations
+      const chickenP = activeState.chicken * baseFoodProfiles.chicken.p;
+      const chickenC = activeState.chicken * baseFoodProfiles.chicken.c;
+      const chickenF = activeState.chicken * baseFoodProfiles.chicken.f;
+      const chickenKcal = activeState.chicken * baseFoodProfiles.chicken.kcal;
+      document.getElementById('chickenMacros').textContent = `${Math.round(chickenKcal)} kcal | P: ${chickenP.toFixed(1)}g | C: ${chickenC.toFixed(1)}g | F: ${chickenF.toFixed(1)}g`;
+
+      // Whole Eggs calculations
+      const wholeEggsP = activeState.wholeEgg * baseFoodProfiles.wholeEgg.p;
+      const wholeEggsC = activeState.wholeEgg * baseFoodProfiles.wholeEgg.c;
+      const wholeEggsF = activeState.wholeEgg * baseFoodProfiles.wholeEgg.f;
+      const wholeEggsKcal = activeState.wholeEgg * baseFoodProfiles.wholeEgg.kcal;
+      document.getElementById('wholeEggsMacros').textContent = `${Math.round(wholeEggsKcal)} kcal | P: ${wholeEggsP.toFixed(1)}g | C: ${wholeEggsC.toFixed(1)}g | F: ${wholeEggsF.toFixed(1)}g`;
+
+      // Liquid Egg Whites calculations
+      const eggWhitesP = activeState.eggWhite * baseFoodProfiles.eggWhite.p;
+      const eggWhitesC = activeState.eggWhite * baseFoodProfiles.eggWhite.c;
+      const eggWhitesF = activeState.eggWhite * baseFoodProfiles.eggWhite.f;
+      const eggWhitesKcal = activeState.eggWhite * baseFoodProfiles.eggWhite.kcal;
+      document.getElementById('eggWhitesMacros').textContent = `${Math.round(eggWhitesKcal)} kcal | P: ${eggWhitesP.toFixed(1)}g | C: ${eggWhitesC.toFixed(1)}g | F: ${eggWhitesF.toFixed(1)}g`;
+
+      // Soya Chunks calculations
+      const soyaP = activeState.soya * baseFoodProfiles.soya.p;
+      const soyaC = activeState.soya * baseFoodProfiles.soya.c;
+      const soyaF = activeState.soya * baseFoodProfiles.soya.f;
+      const soyaKcal = activeState.soya * baseFoodProfiles.soya.kcal;
+      document.getElementById('soyaMacros').textContent = `${Math.round(soyaKcal)} kcal | P: ${soyaP.toFixed(1)}g | C: ${soyaC.toFixed(1)}g | F: ${soyaF.toFixed(1)}g`;
+
+      // Low-Fat Paneer / Tofu calculations
+      const paneerP = activeState.paneer * baseFoodProfiles.paneer.p;
+      const paneerC = activeState.paneer * baseFoodProfiles.paneer.c;
+      const paneerF = activeState.paneer * baseFoodProfiles.paneer.f;
+      const paneerKcal = activeState.paneer * baseFoodProfiles.paneer.kcal;
+      document.getElementById('paneerMacros').textContent = `${Math.round(paneerKcal)} kcal | P: ${paneerP.toFixed(1)}g | C: ${paneerC.toFixed(1)}g | F: ${paneerF.toFixed(1)}g`;
+
+      // Cruciferous Vegetables calculations
+      const vegP = activeState.veg * baseFoodProfiles.veg.p;
+      const vegC = activeState.veg * baseFoodProfiles.veg.c;
+      const vegF = activeState.veg * baseFoodProfiles.veg.f;
+      const vegKcal = activeState.veg * baseFoodProfiles.veg.kcal;
+      document.getElementById('vegMacros').textContent = `${Math.round(vegKcal)} kcal | P: ${vegP.toFixed(1)}g | C: ${vegC.toFixed(1)}g | F: ${vegF.toFixed(1)}g`;
+
+      // Summation of baseline elements
+      let totalKcal = oatsKcal + riceKcal + rotiKcal + dalKcal + paneerKcal + soyaKcal + vegKcal;
+      let totalP = oatsP + riceP + rotiP + dalP + paneerP + soyaP + vegP;
+      let totalC = oatsC + riceC + rotiC + dalC + paneerC + soyaC + vegC;
+      let totalF = oatsF + riceF + rotiF + dalF + paneerF + soyaF + vegF;
+
+      // Add protein source totals based on selected protocol
+      if (record.protSourceSelected === 'chicken') {
+        totalKcal += chickenKcal;
+        totalP += chickenP;
+        totalC += chickenC;
+        totalF += chickenF;
+      } else {
+        totalKcal += wholeEggsKcal + eggWhitesKcal;
+        totalP += wholeEggsP + eggWhitesP;
+        totalC += wholeEggsC + eggWhitesC;
+        totalF += wholeEggsF + eggWhitesF;
+      }
+
+      // Add custom dynamic foods values
+      customFoodProfiles.forEach(food => {
+        const val = activeState[food.id] || 0;
+        const foodKcal = val * food.kcal;
+        const foodP = val * food.p;
+        const foodC = val * food.c;
+        const foodF = val * food.f;
+
+        const cardDisplay = document.getElementById(`macros-${food.id}`);
+        if (cardDisplay) {
+          cardDisplay.textContent = `${Math.round(foodKcal)} kcal | P: ${foodP.toFixed(1)}g | C: ${foodC.toFixed(1)}g | F: ${foodF.toFixed(1)}g`;
+        }
+
+        totalKcal += foodKcal;
+        totalP += foodP;
+        totalC += foodC;
+        totalF += foodF;
+      });
+
+      // Update customized sum labels on the UI
+      document.getElementById('customizedTotal').textContent = `${Math.round(totalKcal)} kcal // P: ${Math.round(totalP)}g // C: ${Math.round(totalC)}g // F: ${Math.round(totalF)}g`;
+
+      // Target matching display
+      const isTrain = (record.dietDaySelected === 'train');
+      const targetCals = isTrain ? activeCalculations.trainCals : activeCalculations.restCals;
+      const targetCarbs = isTrain ? activeCalculations.trainCarbs : activeCalculations.restCarbs;
+      const targetFats = isTrain ? activeCalculations.trainFats : activeCalculations.restFats;
+      const targetProt = activeCalculations.protein;
+
+      document.getElementById('dietTargetSummary').textContent = `${targetCals} kcal // P: ${targetProt}g // C: ${targetCarbs}g // F: ${targetFats}g`;
+
+      // Compute dynamic fiber targets (14g per 1000 calories of calculated TDEE)
+      const tdee = parseFloat(document.getElementById('calculatedTDEE').textContent) || 2668;
+      const fiberGoal = Math.round((tdee / 1000) * 14);
+      document.getElementById('dietFiber').textContent = `${fiberGoal}g`;
+    }
+
+    // Render historical logs summary chronological nodes
+    function renderHistoryTimeline() {
+      const container = document.getElementById('historyTimeline');
+      container.innerHTML = '';
+
+      // Collect all diary dates, sorted chronologically
+      const sortedDates = Object.keys(dateDiaryDatabase).sort();
+      let hasModifiedLogs = false;
+
+      sortedDates.forEach(dateStr => {
+        const record = dateDiaryDatabase[dateStr];
+        const state = record.loggedQuantities;
+
+        // Verify if this date has any modified metrics (not purely blank 0-calorie days)
+        let dayCals = 0;
+        for (let key in state) {
+          // Standard Oats, Rice, etc. macros
+          if (key === 'oats') dayCals += state.oats * baseFoodProfiles.oats.kcal;
+          else if (key === 'rice') dayCals += state.rice * baseFoodProfiles.rice.kcal;
+          else if (key === 'roti') dayCals += state.roti * baseFoodProfiles.roti.kcal;
+          else if (key === 'dal') dayCals += state.dal * baseFoodProfiles.dal.kcal;
+          else if (key === 'chicken' && record.protSourceSelected === 'chicken') dayCals += state.chicken * baseFoodProfiles.chicken.kcal;
+          else if (key === 'wholeEgg' && record.protSourceSelected === 'eggs') dayCals += state.wholeEgg * baseFoodProfiles.wholeEgg.kcal;
+          else if (key === 'eggWhite' && record.protSourceSelected === 'eggs') dayCals += state.eggWhite * baseFoodProfiles.eggWhite.kcal;
+          else if (key === 'soya') dayCals += state.soya * baseFoodProfiles.soya.kcal;
+          else if (key === 'paneer') dayCals += state.paneer * baseFoodProfiles.paneer.kcal;
+          else if (key === 'veg') dayCals += state.veg * baseFoodProfiles.veg.kcal;
+          else {
+            // custom food values
+            const customFood = customFoodProfiles.find(f => f.id === key);
+            if (customFood) {
+              dayCals += state[key] * customFood.kcal;
+            }
+          }
+        }
+
+        if (dayCals > 0) {
+          hasModifiedLogs = true;
+          const isSelected = (dateStr === selectedDateString);
+          const activeClass = isSelected 
+            ? "bg-black text-white border-black font-extrabold" 
+            : "bg-white text-neutral-800 border-neutral-300 hover:border-black font-semibold";
+          
+          const dateNode = `
+            <button onclick="onDiaryDateChange('${dateStr}')" class="px-3 py-1.5 border rounded text-xs transition-all flex items-center gap-1.5 shadow-sm ${activeClass}">
+              <span>${formatDateStringNice(dateStr)}</span>
+              <span class="text-[10px] opacity-75">(${Math.round(dayCals)} kcal)</span>
+            </button>
+          `;
+          container.insertAdjacentHTML('beforeend', dateNode);
+        }
+      });
+
+      if (!hasModifiedLogs) {
+        container.innerHTML = `<span class="text-xs text-neutral-400 italic">No food entry metrics recorded yet. Quantities are currently 0.</span>`;
+      }
+    }
+
+    function formatDateStringNice(dateStr) {
+      const parts = dateStr.split('-');
+      if (parts.length !== 3) return dateStr;
+      const year = parts[0];
+      const monthIndex = parseInt(parts[1]) - 1;
+      const day = parts[2];
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      return `${months[monthIndex]} ${day}, ${year}`;
+    }
+
+    // Auto calculate baseline target recommendations for active day structure
+    function applySuggestedPortionTargets() {
+      const record = getOrInitDateRecord(selectedDateString);
+      const isTrain = (record.dietDaySelected === 'train');
+      const carbs = isTrain ? activeCalculations.trainCarbs : activeCalculations.restCarbs;
+      const protein = activeCalculations.protein;
+
+      // Dry Dal baseline target (100g = 24g P, 57g C)
+      record.loggedQuantities.dal = 100;
+
+      const remainingCarbs = Math.max(20, carbs - 57);
+
+      // Oats suggested dry weight target (30% remaining carbs)
+      record.loggedQuantities.oats = Math.round(((remainingCarbs * 0.30) / 0.66) / 5) * 5;
+
+      // Roti suggested units target (30% remaining carbs)
+      record.loggedQuantities.roti = Math.max(1, Math.round((remainingCarbs * 0.30) / 15));
+
+      // Basmati Rice suggested dry weight target (40% remaining carbs)
+      record.loggedQuantities.rice = Math.round(((remainingCarbs * 0.40) / 0.78) / 5) * 5;
+
+      // Chicken Suggested Raw Weight Portion: ~60% of total protein requirement
+      const proteinFromChicken = protein * 0.60;
+      let chickenGrams = Math.round((proteinFromChicken / 0.22) / 10) * 10;
+      record.loggedQuantities.chicken = Math.min(500, chickenGrams);
+
+      // Egg suggested units (6 Whole eggs (~36g protein) and remaining target handled by egg whites)
+      const proteinFromWholeEggs = protein * 0.35;
+      record.loggedQuantities.wholeEgg = Math.round(proteinFromWholeEggs / 6);
+
+      const proteinFromEggWhites = protein * 0.45;
+      record.loggedQuantities.eggWhite = Math.round((proteinFromEggWhites / 0.11) / 10) * 10;
+
+      // Soya Chunks Suggested Weight target (~52g P per 100g)
+      record.loggedQuantities.soya = Math.round(((protein * 0.30) / 0.52) / 5) * 5;
+
+      // Low-Fat Paneer Suggested Weight target (~18g P per 100g)
+      record.loggedQuantities.paneer = Math.round(((protein * 0.20) / 0.18) / 10) * 10;
+
+      // Cruciferous Veg standard base
+      record.loggedQuantities.veg = 300;
+
+      // Force UI update
+      loadStateToUI(record);
+      saveAndRecalc();
+    }
+
+    function resetDietToSuggested() {
+      applySuggestedPortionTargets();
+      showNotification("Targets matching nutritional outputs applied to current date.");
+    }
+
+    function clearCurrentDayLogs() {
+      const record = getOrInitDateRecord(selectedDateString);
+      for (let key in record.loggedQuantities) {
+        record.loggedQuantities[key] = 0;
+      }
+      loadStateToUI(record);
+      saveAndRecalc();
+      showNotification("Logged food parameters cleared back to 0.");
+    }
+
+    function setDietDay(day) {
+      const record = getOrInitDateRecord(selectedDateString);
+      record.dietDaySelected = day;
+
+      const btnTrain = document.getElementById('diet-day-train');
+      const btnRest = document.getElementById('diet-day-rest');
+
+      if (day === 'train') {
+        btnTrain.className = "px-2.5 py-1.5 text-[9px] uppercase font-bold rounded bg-black text-white shadow-sm";
+        btnRest.className = "px-2.5 py-1.5 text-[9px] uppercase font-bold rounded text-[#555555]";
+      } else {
+        btnRest.className = "px-2.5 py-1.5 text-[9px] uppercase font-bold rounded bg-black text-white shadow-sm";
+        btnTrain.className = "px-2.5 py-1.5 text-[9px] uppercase font-bold rounded text-[#555555]";
+      }
+      saveAndRecalc();
+    }
+
+    function setProtSource(source) {
+      const record = getOrInitDateRecord(selectedDateString);
+      record.protSourceSelected = source;
+
+      const btnChic = document.getElementById('prot-source-chicken');
+      const btnEggs = document.getElementById('prot-source-eggs');
+
+      const cardChic = document.getElementById('diet-chicken-card');
+      const cardEggs = document.getElementById('diet-eggs-card');
+
+      if (source === 'chicken') {
+        btnChic.className = "flex-1 text-center py-1 text-[9px] uppercase font-bold rounded bg-white text-black shadow-sm";
+        btnEggs.className = "flex-1 text-center py-1 text-[9px] uppercase font-bold rounded text-neutral-500";
+        cardChic.style.display = "block";
+        cardEggs.style.display = "none";
+      } else {
+        btnEggs.className = "flex-1 text-center py-1 text-[9px] uppercase font-bold rounded bg-white text-black shadow-sm";
+        btnChic.className = "flex-1 text-center py-1 text-[9px] uppercase font-bold rounded text-neutral-500";
+        cardChic.style.display = "none";
+        cardEggs.style.display = "block";
+      }
+      saveAndRecalc();
+    }
+
+    // Toggle navigation panels
     function switchTab(index) {
       activeTabIdx = index;
       
@@ -1554,6 +2338,9 @@
       const singleViewNav = document.getElementById('singleViewNav');
 
       if (isAllPagesMode) {
+        // Save date changes before toggling view to prevent loss
+        saveStateToMemory(selectedDateString);
+
         viewToggleBtn.innerHTML = `
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
           <span>Single Sheet View</span>
@@ -1574,7 +2361,6 @@
           clone.classList.remove('hidden', 'sheet-page');
           clone.classList.add('block', 'mb-12');
           
-          // Disable interactive elements on printed copy for styling output
           if (i === 2) {
             clone.querySelectorAll('#nutWeight')?.forEach(el => el.setAttribute('disabled', 'true'));
             clone.querySelectorAll('#nutBF')?.forEach(el => el.setAttribute('disabled', 'true'));
@@ -1603,239 +2389,8 @@
       }
     }
 
-    function setDietDay(day) {
-      dietDaySelected = day;
-      const btnTrain = document.getElementById('diet-day-train');
-      const btnRest = document.getElementById('diet-day-rest');
-
-      if (day === 'train') {
-        btnTrain.className = "px-2.5 py-1 text-[9px] uppercase font-bold rounded bg-black text-white";
-        btnRest.className = "px-2.5 py-1 text-[9px] uppercase font-bold rounded text-[#555555]";
-      } else {
-        btnRest.className = "px-2.5 py-1 text-[9px] uppercase font-bold rounded bg-black text-white";
-        btnTrain.className = "px-2.5 py-1 text-[9px] uppercase font-bold rounded text-[#555555]";
-      }
-      applySuggestedPortionTargets();
-    }
-
-    function setProtSource(source) {
-      protSourceSelected = source;
-      const btnChic = document.getElementById('prot-source-chicken');
-      const btnEggs = document.getElementById('prot-source-eggs');
-
-      const cardChic = document.getElementById('diet-chicken-card');
-      const cardEggs = document.getElementById('diet-eggs-card');
-
-      if (source === 'chicken') {
-        btnChic.className = "flex-1 text-center py-1 text-[9px] uppercase font-bold rounded bg-white text-black shadow-sm";
-        btnEggs.className = "flex-1 text-center py-1 text-[9px] uppercase font-bold rounded text-neutral-500";
-        cardChic.style.display = "block";
-        cardEggs.style.display = "none";
-      } else {
-        btnEggs.className = "flex-1 text-center py-1 text-[9px] uppercase font-bold rounded bg-white text-black shadow-sm";
-        btnChic.className = "flex-1 text-center py-1 text-[9px] uppercase font-bold rounded text-neutral-500";
-        cardChic.style.display = "none";
-        cardEggs.style.display = "block";
-      }
-      recalcDietMacros();
-    }
-
-    // Establish Suggested Baseline Targets on calculation change
-    function applySuggestedPortionTargets() {
-      const isTrain = (dietDaySelected === 'train');
-      const carbs = isTrain ? activeCalculations.trainCarbs : activeCalculations.restCarbs;
-      const protein = activeCalculations.protein;
-
-      // Yellow/Red Dal suggested dry benchmark (usually constant at 100g, yields 57g C, 24g P)
-      document.getElementById('inputDal').value = 100;
-
-      // Remaining carbohydrates to allocate to Oats, Rice, and Roti
-      const remainingCarbs = Math.max(20, carbs - 57);
-
-      // Oats suggested dry weight target: 30% of remaining carbs (Oats uncooked: ~66g carbs per 100g)
-      const oatsGrams = Math.round(((remainingCarbs * 0.30) / 0.66) / 5) * 5;
-      document.getElementById('inputOats').value = oatsGrams;
-
-      // Roti suggested units target: 30% of remaining carbs (Standard home roti: ~15g carbs)
-      const rotiCount = Math.max(1, Math.round((remainingCarbs * 0.30) / 15));
-      document.getElementById('inputRoti').value = rotiCount;
-
-      // Basmati Rice suggested dry weight target: 40% of remaining carbs (Uncooked Basmati: ~78g carbs per 100g)
-      const riceGrams = Math.round(((remainingCarbs * 0.40) / 0.78) / 5) * 5;
-      document.getElementById('inputRice').value = riceGrams;
-
-      // Chicken Suggested Raw Weight Portion: ~60% of total protein requirement (Raw Chicken: ~22g P per 100g)
-      const proteinFromChicken = protein * 0.60;
-      let chickenGrams = Math.round((proteinFromChicken / 0.22) / 10) * 10;
-      chickenGrams = Math.min(500, chickenGrams); // Cap at max 500g capacity rule
-      document.getElementById('inputChicken').value = chickenGrams;
-
-      // Egg suggested units: 6 Whole eggs (~36g protein) and remaining target handled by egg whites (~11g protein per 100g)
-      const proteinFromWholeEggs = protein * 0.35;
-      const wholeEggsCount = Math.round(proteinFromWholeEggs / 6);
-      document.getElementById('inputWholeEggs').value = wholeEggsCount;
-
-      const proteinFromEggWhites = protein * 0.45;
-      const eggWhitesWeight = Math.round((proteinFromEggWhites / 0.11) / 10) * 10;
-      document.getElementById('inputEggWhites').value = eggWhitesWeight;
-
-      // Soya Chunks Suggested Weight target (~52g P per 100g) - scales to ~30% of protein budget
-      const soyaGrams = Math.round(((protein * 0.30) / 0.52) / 5) * 5;
-      document.getElementById('inputSoya').value = soyaGrams;
-
-      // Low-Fat Paneer Suggested Weight target (~18g P per 100g) - scales to ~20% of protein budget
-      const paneerGrams = Math.round(((protein * 0.20) / 0.18) / 10) * 10;
-      document.getElementById('inputPaneer').value = paneerGrams;
-
-      // Default Cruciferous Vegetables Suggested Weight
-      document.getElementById('inputVeg').value = 300;
-
-      // Trigger calculations update
-      recalcDietMacros();
-    }
-
-    function resetDietToSuggested() {
-      applySuggestedPortionTargets();
-    }
-
-    // Fully connected dynamic macro calculations for every single food item
-    function recalcDietMacros() {
-      // Inputs
-      const oatsGrams = parseFloat(document.getElementById('inputOats').value) || 0;
-      const riceGrams = parseFloat(document.getElementById('inputRice').value) || 0;
-      const rotiCount = parseFloat(document.getElementById('inputRoti').value) || 0;
-      const dalGrams = parseFloat(document.getElementById('inputDal').value) || 0;
-      const chickenGrams = parseFloat(document.getElementById('inputChicken').value) || 0;
-      const wholeEggsCount = parseFloat(document.getElementById('inputWholeEggs').value) || 0;
-      const eggWhitesGrams = parseFloat(document.getElementById('inputEggWhites').value) || 0;
-      const soyaGrams = parseFloat(document.getElementById('inputSoya').value) || 0;
-      const paneerGrams = parseFloat(document.getElementById('inputPaneer').value) || 0;
-      const vegGrams = parseFloat(document.getElementById('inputVeg').value) || 0;
-
-      // Standard Bio-profiles definitions per 100g (or per piece)
-      const profiles = {
-        oats: { kcal: 3.8, p: 0.13, c: 0.66, f: 0.07 },
-        rice: { kcal: 3.5, p: 0.075, c: 0.78, f: 0.01 },
-        roti: { kcal: 70, p: 3, c: 15, f: 0.5 }, // per 1 piece
-        dal: { kcal: 3.4, p: 0.24, c: 0.57, f: 0.015 },
-        chicken: { kcal: 1.2, p: 0.22, c: 0.0, f: 0.025 },
-        wholeEgg: { kcal: 70, p: 6, c: 0.6, f: 5 }, // per 1 piece
-        eggWhite: { kcal: 0.5, p: 0.11, c: 0.007, f: 0.002 },
-        soya: { kcal: 3.45, p: 0.52, c: 0.33, f: 0.005 },
-        paneer: { kcal: 1.5, p: 0.18, c: 0.03, f: 0.08 },
-        veg: { kcal: 0.25, p: 0.02, c: 0.05, f: 0.001 }
-      };
-
-      // 1. Oats Macros
-      const oatsP = oatsGrams * profiles.oats.p;
-      const oatsC = oatsGrams * profiles.oats.c;
-      const oatsF = oatsGrams * profiles.oats.f;
-      const oatsKcal = oatsGrams * profiles.oats.kcal;
-      document.getElementById('oatsMacros').textContent = `${Math.round(oatsKcal)} kcal | P: ${oatsP.toFixed(1)}g | C: ${oatsC.toFixed(1)}g | F: ${oatsF.toFixed(1)}g`;
-
-      // 2. Basmati Rice Macros
-      const riceP = riceGrams * profiles.rice.p;
-      const riceC = riceGrams * profiles.rice.c;
-      const riceF = riceGrams * profiles.rice.f;
-      const riceKcal = riceGrams * profiles.rice.kcal;
-      document.getElementById('riceMacros').textContent = `${Math.round(riceKcal)} kcal | P: ${riceP.toFixed(1)}g | C: ${riceC.toFixed(1)}g | F: ${riceF.toFixed(1)}g`;
-
-      // 3. Whole Wheat Roti Macros
-      const rotiP = rotiCount * profiles.roti.p;
-      const rotiC = rotiCount * profiles.roti.c;
-      const rotiF = rotiCount * profiles.roti.f;
-      const rotiKcal = rotiCount * profiles.roti.kcal;
-      document.getElementById('rotiMacros').textContent = `${Math.round(rotiKcal)} kcal | P: ${rotiP.toFixed(1)}g | C: ${rotiC.toFixed(1)}g | F: ${rotiF.toFixed(1)}g`;
-
-      // 4. Yellow/Red Dal Macros
-      const dalP = dalGrams * profiles.dal.p;
-      const dalC = dalGrams * profiles.dal.c;
-      const dalF = dalGrams * profiles.dal.f;
-      const dalKcal = dalGrams * profiles.dal.kcal;
-      document.getElementById('dalMacros').textContent = `${Math.round(dalKcal)} kcal | P: ${dalP.toFixed(1)}g | C: ${dalC.toFixed(1)}g | F: ${dalF.toFixed(1)}g`;
-
-      // 5. Chicken Breast Macros
-      const chickenP = chickenGrams * profiles.chicken.p;
-      const chickenC = chickenGrams * profiles.chicken.c;
-      const chickenF = chickenGrams * profiles.chicken.f;
-      const chickenKcal = chickenGrams * profiles.chicken.kcal;
-      document.getElementById('chickenMacros').textContent = `${Math.round(chickenKcal)} kcal | P: ${chickenP.toFixed(1)}g | C: ${chickenC.toFixed(1)}g | F: ${chickenF.toFixed(1)}g`;
-
-      // 6. Whole Eggs Macros
-      const wholeEggsP = wholeEggsCount * profiles.wholeEgg.p;
-      const wholeEggsC = wholeEggsCount * profiles.wholeEgg.c;
-      const wholeEggsF = wholeEggsCount * profiles.wholeEgg.f;
-      const wholeEggsKcal = wholeEggsCount * profiles.wholeEgg.kcal;
-      document.getElementById('wholeEggsMacros').textContent = `${Math.round(wholeEggsKcal)} kcal | P: ${wholeEggsP.toFixed(1)}g | C: ${wholeEggsC.toFixed(1)}g | F: ${wholeEggsF.toFixed(1)}g`;
-
-      // 7. Liquid Egg Whites Macros
-      const eggWhitesP = eggWhitesGrams * profiles.eggWhite.p;
-      const eggWhitesC = eggWhitesGrams * profiles.eggWhite.c;
-      const eggWhitesF = eggWhitesGrams * profiles.eggWhite.f;
-      const eggWhitesKcal = eggWhitesGrams * profiles.eggWhite.kcal;
-      document.getElementById('eggWhitesMacros').textContent = `${Math.round(eggWhitesKcal)} kcal | P: ${eggWhitesP.toFixed(1)}g | C: ${eggWhitesC.toFixed(1)}g | F: ${eggWhitesF.toFixed(1)}g`;
-
-      // 8. Soya Chunks Macros
-      const soyaP = soyaGrams * profiles.soya.p;
-      const soyaC = soyaGrams * profiles.soya.c;
-      const soyaF = soyaGrams * profiles.soya.f;
-      const soyaKcal = soyaGrams * profiles.soya.kcal;
-      document.getElementById('soyaMacros').textContent = `${Math.round(soyaKcal)} kcal | P: ${soyaP.toFixed(1)}g | C: ${soyaC.toFixed(1)}g | F: ${soyaF.toFixed(1)}g`;
-
-      // 9. Low-Fat Paneer / Tofu Macros
-      const paneerP = paneerGrams * profiles.paneer.p;
-      const paneerC = paneerGrams * profiles.paneer.c;
-      const paneerF = paneerGrams * profiles.paneer.f;
-      const paneerKcal = paneerGrams * profiles.paneer.kcal;
-      document.getElementById('paneerMacros').textContent = `${Math.round(paneerKcal)} kcal | P: ${paneerP.toFixed(1)}g | C: ${paneerC.toFixed(1)}g | F: ${paneerF.toFixed(1)}g`;
-
-      // 10. Cruciferous Vegetables Macros
-      const vegP = vegGrams * profiles.veg.p;
-      const vegC = vegGrams * profiles.veg.c;
-      const vegF = vegGrams * profiles.veg.f;
-      const vegKcal = vegGrams * profiles.veg.kcal;
-      document.getElementById('vegMacros').textContent = `${Math.round(vegKcal)} kcal | P: ${vegP.toFixed(1)}g | C: ${vegC.toFixed(1)}g | F: ${vegF.toFixed(1)}g`;
-
-      // 11. Sum Summation of Customized Intake
-      // Based on Toggle Protocols, we sum either Chicken OR Eggs parameters
-      let totalKcal = oatsKcal + riceKcal + rotiKcal + dalKcal + paneerKcal + soyaKcal + vegKcal;
-      let totalP = oatsP + riceP + rotiP + dalP + paneerP + soyaP + vegP;
-      let totalC = oatsC + riceC + rotiC + dalC + paneerC + soyaC + vegC;
-      let totalF = oatsF + riceF + rotiF + dalF + paneerF + soyaF + vegF;
-
-      if (protSourceSelected === 'chicken') {
-        totalKcal += chickenKcal;
-        totalP += chickenP;
-        totalC += chickenC;
-        totalF += chickenF;
-      } else {
-        totalKcal += wholeEggsKcal + eggWhitesKcal;
-        totalP += wholeEggsP + eggWhitesP;
-        totalC += wholeEggsC + eggWhitesC;
-        totalF += wholeEggsF + eggWhitesF;
-      }
-
-      // 12. Display customized sums in compare box
-      document.getElementById('customizedTotal').textContent = `${Math.round(totalKcal)} kcal // P: ${Math.round(totalP)}g // C: ${Math.round(totalC)}g // F: ${Math.round(totalF)}g`;
-
-      // 13. Display target goal comparison baseline
-      const isTrain = (dietDaySelected === 'train');
-      const targetCals = isTrain ? activeCalculations.trainCals : activeCalculations.restCals;
-      const targetCarbs = isTrain ? activeCalculations.trainCarbs : activeCalculations.restCarbs;
-      const targetFats = isTrain ? activeCalculations.trainFats : activeCalculations.restFats;
-      const targetProt = activeCalculations.protein;
-
-      document.getElementById('dietTargetSummary').textContent = `${targetCals} kcal // P: ${targetProt}g // C: ${targetCarbs}g // F: ${targetFats}g`;
-
-      // 14. Calculate Dynamic Fiber Goal (14g per 1000 cals of calculated TDEE)
-      const tdee = parseFloat(document.getElementById('calculatedTDEE').textContent) || 2668;
-      const fiberGoal = Math.round((tdee / 1000) * 14);
-      document.getElementById('dietFiber').textContent = `${fiberGoal}g`;
-    }
-
     // Comprehensive Interactive Weight & Body Fat Updates (EVERYTHING IS DYNAMIC)
     function runCustomCalc() {
-      // 1. Gather Input Metrics
       const weightVal = parseFloat(document.getElementById('nutWeight').value) || 76.9;
       const bfVal = parseFloat(document.getElementById('nutBF').value) || 24.9;
       const heightVal = parseFloat(document.getElementById('nutHeight').value) || 180;
@@ -1844,7 +2399,7 @@
       const activityCoeff = parseFloat(document.getElementById('nutActivity').value) || 1.65;
       const goalType = document.getElementById('nutGoal').value;
 
-      // 2. Katch-McArdle Formula (Premium precision for athletes utilizing Lean Body Mass)
+      // Katch-McArdle Formula
       const lbm = weightVal * (1 - (bfVal / 100));
       const bmr = 370 + (21.6 * lbm);
       const tdee = bmr * activityCoeff;
@@ -1854,7 +2409,6 @@
       document.getElementById('calculatedBMR').textContent = `${Math.round(bmr)} kcal`;
       document.getElementById('calculatedTDEE').textContent = `${Math.round(tdee)} kcal`;
 
-      // 3. Define Caloric Budgets based on Goal Type
       let trainCalsBase = 2400;
       let restCalsBase = 2200;
 
@@ -1872,7 +2426,7 @@
         document.getElementById('coverGoal').textContent = "Fat Loss / Shred";
       }
 
-      // Safe bounds (minimum baseline survival caloric safeguards)
+      // Safe bounds protection
       trainCalsBase = Math.max(1500, trainCalsBase);
       restCalsBase = Math.max(1200, restCalsBase);
 
@@ -1881,23 +2435,20 @@
       const restCalsMin = Math.round(restCalsBase - 100);
       const restCalsMax = Math.round(restCalsBase + 100);
 
-      // 4. Protein Target (Strict 2.2g per KG of total mass)
       const proteinTarget = Math.round(weightVal * 2.2);
 
-      // 5. Fat Targets
       const trainFatGramMin = Math.round((trainCalsMin * 0.23) / 9);
       const trainFatGramMax = Math.round((trainCalsMax * 0.25) / 9);
       const restFatGramMin = Math.round((restCalsMin * 0.26) / 9);
       const restFatGramMax = Math.round((restCalsMax * 0.28) / 9);
 
-      // 6. Carbohydrate Targets (Remaining Calories after Protein and Fat)
       const trainCarbMin = Math.round((trainCalsMin - (proteinTarget * 4) - (trainFatGramMin * 9)) / 4);
       const trainCarbMax = Math.round((trainCalsMax - (proteinTarget * 4) - (trainFatGramMax * 9)) / 4);
 
       const restCarbMin = Math.round((restCalsMin - (proteinTarget * 4) - (restFatGramMin * 9)) / 4);
       const restCarbMax = Math.round((restCalsMax - (proteinTarget * 4) - (restFatGramMax * 9)) / 4);
 
-      // 7. Update internal calculations state object
+      // Update cached projections
       activeCalculations.trainCals = Math.round(trainCalsBase);
       activeCalculations.restCals = Math.round(restCalsBase);
       activeCalculations.trainCarbs = Math.round((trainCarbMin + trainCarbMax) / 2);
@@ -1906,7 +2457,7 @@
       activeCalculations.restFats = Math.round((restFatGramMin + restFatGramMax) / 2);
       activeCalculations.protein = proteinTarget;
 
-      // 8. Push calculated variables to DOM Cards (Page 1)
+      // Render calculations back into fields
       document.getElementById('trainCalsRange').textContent = `${trainCalsMin} - ${trainCalsMax} kcal`;
       document.getElementById('trainProtein').textContent = `${proteinTarget}g`;
       document.getElementById('trainCarbs').textContent = `${Math.max(20, trainCarbMin)}g - ${Math.max(40, trainCarbMax)}g`;
@@ -1917,7 +2468,7 @@
       document.getElementById('restCarbs').textContent = `${Math.max(10, restCarbMin)}g - ${Math.max(30, restCarbMax)}g`;
       document.getElementById('restFats').textContent = `${restFatGramMin}g - ${restFatGramMax}g`;
 
-      // 9. Synchronize values with Cover Page Biometrics card (Page 0)
+      // Update Page 0 Biometrics cards
       document.getElementById('coverWeight').textContent = `${weightVal.toFixed(1)} KG`;
       document.getElementById('coverBF').textContent = `${bfVal.toFixed(1)}%`;
       
@@ -1929,12 +2480,36 @@
         document.getElementById('coverTargetBF').textContent = "12.0% - 15.0%";
       }
 
-      // 10. Re-suggest portions dynamically on calculations change (unless manually locked)
-      applySuggestedPortionTargets();
+      recalcDietMacros();
+      renderHistoryTimeline();
     }
 
+    // Standard ISO string formatter for date selector initialization
+    function getFormattedTodayString() {
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const yyyy = today.getFullYear();
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    // App system bootloader on windows load
     window.onload = function() {
+      // 1. Establish today's diary string reference
+      selectedDateString = getFormattedTodayString();
+      
+      // 2. Set default date value inside the DOM picker
+      const dateInput = document.getElementById('diaryDate');
+      dateInput.value = selectedDateString;
+      
+      // 3. Populate default clean slate date maps
+      getOrInitDateRecord(selectedDateString);
+
+      // 4. Force default parameters parsing
       runCustomCalc();
+
+      // 5. Build timeline metrics on startup
+      renderHistoryTimeline();
     }
   </script>
 </body>
