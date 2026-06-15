@@ -391,12 +391,15 @@
 
           <!-- GOOGLE SEARCH & MANUAL FOOD ENTRY ADDER -->
           <div class="border border-neutral-300 rounded-lg p-4 bg-white space-y-3 shadow-sm">
-            <div class="flex items-center justify-between border-b border-neutral-200 pb-1.5">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-neutral-200 pb-1.5 gap-2">
               <span class="monospace text-[10px] font-bold text-black uppercase tracking-wider flex items-center gap-1.5">
                 <svg class="w-4 h-4 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 Deploy Food Database / Add Custom Foods
               </span>
-              <span class="text-[9px] text-[#777] font-semibold">Grounded via Google Search API</span>
+              <div class="flex items-center gap-2">
+                <input type="password" id="customApiKey" placeholder="Paste Gemini API Key (for GitHub Pages)" class="text-[9px] bg-neutral-50 border border-neutral-300 rounded px-2 py-1 focus:border-black max-w-[180px]" title="Insert your own Gemini API key to keep search working live on your personal website hosted links">
+                <span class="text-[9px] text-[#777] font-semibold">Grounded via Google Search API</span>
+              </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1549,6 +1552,40 @@
       veg: { name: "Cruciferous Veg (Spinach/Broccoli)", kcal: 0.25, p: 0.02, c: 0.05, f: 0.001, unit: 'g' }
     };
 
+    // Enhanced Local Offline Database for external deployments (like GitHub Pages) when API key is unconfigured
+    const localOfflineDatabase = {
+      "chocolate": [
+        { name: "Cadbury Dairy Milk Silk", calories: 544, protein: 6.5, carbs: 58.5, fat: 31.5 },
+        { name: "Dark Chocolate (70% Cocoa)", calories: 598, protein: 7.8, carbs: 45.9, fat: 42.6 },
+        { name: "Milk Chocolate (Standard)", calories: 535, protein: 7.6, carbs: 59.4, fat: 29.7 }
+      ],
+      "cadbury": [
+        { name: "Cadbury Dairy Milk Silk", calories: 544, protein: 6.5, carbs: 58.5, fat: 31.5 },
+        { name: "Cadbury Bournville (Dark)", calories: 512, protein: 5.5, carbs: 63.0, fat: 26.0 },
+        { name: "Cadbury Fruit & Nut", calories: 520, protein: 7.0, carbs: 57.0, fat: 29.0 }
+      ],
+      "silk": [
+        { name: "Cadbury Dairy Milk Silk (Standard)", calories: 544, protein: 6.5, carbs: 58.5, fat: 31.5 },
+        { name: "Cadbury Silk Fruit & Nut", calories: 520, protein: 7.0, carbs: 57.0, fat: 29.0 },
+        { name: "Cadbury Silk Oreo", calories: 556, protein: 5.8, carbs: 60.0, fat: 32.5 }
+      ],
+      "gulab": [
+        { name: "Gulab Jamun (Traditional Deep Fried / Sugar Syrup)", calories: 380, protein: 5.0, carbs: 65.0, fat: 12.0 },
+        { name: "Gulab Jamun (Low Sugar Alternative)", calories: 240, protein: 5.5, carbs: 45.0, fat: 5.0 }
+      ],
+      "gulabjamun": [
+        { name: "Gulab Jamun (Traditional Deep Fried / Sugar Syrup)", calories: 380, protein: 5.0, carbs: 65.0, fat: 12.0 },
+        { name: "Gulab Jamun (Low Sugar Alternative)", calories: 240, protein: 5.5, carbs: 45.0, fat: 5.0 }
+      ],
+      "paneer": [
+        { name: "Low-Fat Paneer / Tofu", calories: 150, protein: 18.0, carbs: 3.0, fat: 8.0 },
+        { name: "Amul Fresh Paneer (Standard)", calories: 314, protein: 20.0, carbs: 2.0, fat: 25.0 }
+      ],
+      "avocado": [
+        { name: "Raw Avocado (Hass variety)", calories: 160, protein: 2.0, carbs: 8.5, fat: 14.7 }
+      ]
+    };
+
     // Store custom food definitions created globally
     // Structure: { id: "custom_123", name: "Avocado", kcal: 1.6, p: 0.02, c: 0.09, f: 0.15, unit: 'g', column: 'veg' }
     let customFoodProfiles = [];
@@ -1587,7 +1624,12 @@
       const systemPrompt = "Act as an expert nutritional biochemist database. Provide a list of exactly 3 to 5 distinct variations/matches for the searched food name, specifying properties per 100g of raw/uncooked food (or per 1 unit if it's typically eaten as a whole piece, e.g. medium egg or single tortilla). Return ONLY a raw JSON array matching the requested schema. Do not output markdown code blocks or backticks.";
       const userQuery = `Search google nutrition facts and compile a precise variations array of 3 to 5 matching food profiles matching '${foodName}'. For each, extract: name, calories (kcal per 100g/unit), protein (g per 100g/unit), carbs (g per 100g/unit), and fat (g per 100g/unit). Make the names distinct (e.g. "Steamed Basmati Rice", "Brown Rice Raw", "Wild Rice Cooked").`;
       
-      const apiKey = ""; // Canvas handles dynamic API key resolution at runtime
+      let apiKey = ""; // Canvas handles dynamic API key resolution at runtime
+      const userKeyInput = document.getElementById('customApiKey');
+      if (userKeyInput && userKeyInput.value.trim() !== "") {
+        apiKey = userKeyInput.value.trim();
+      }
+
       const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
 
       const payload = {
@@ -1616,6 +1658,11 @@
       };
 
       try {
+        if (!apiKey && window.location.hostname !== 'localhost' && !window.location.hostname.includes('webcontainer')) {
+          // Force fallback early on published domains if no API Key is provided
+          throw new Error("Missing API Key on production environment");
+        }
+
         const response = await fetch(apiUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1634,18 +1681,54 @@
           throw new Error("Invalid format received from parser.");
         }
       } catch (error) {
-        console.error("Grounded Google Lookup fallback initiated...", error);
+        console.warn("Grounded Google Lookup fallback initiated...", error);
+        
+        // Notify user elegantly in the search progress loader if we are running unkeyed
+        const loader = document.getElementById('searchLoader');
+        if (loader) {
+          loader.innerHTML = `
+            <span class="text-amber-600 font-semibold flex items-center gap-1.5">
+              ⚠️ API offline. Loaded smart fallback data matching "${foodName}". Paste your key to query live Google Search!
+            </span>
+          `;
+        }
         return generateMockOptionList(foodName);
       }
     }
 
-    // High fidelity backup options generator in case of network throttle
+    // High fidelity backup options generator with categorizing heuristics
     function generateMockOptionList(foodName) {
-      const formatted = foodName.trim();
+      const formatted = foodName.toLowerCase().trim();
+      
+      // 1. Check direct matches in upgraded local database
+      for (const key in localOfflineDatabase) {
+        if (formatted.includes(key)) {
+          return localOfflineDatabase[key];
+        }
+      }
+
+      // 2. Fallback smart guessing algorithm using string matching
+      let estCal = 150, estP = 5, estC = 15, estF = 5;
+      let suffix = "Standard";
+
+      if (formatted.includes("chicken") || formatted.includes("meat") || formatted.includes("fish") || formatted.includes("salmon") || formatted.includes("paneer")) {
+        estCal = 180; estP = 22; estC = 1; estF = 9;
+        suffix = "Protein Source";
+      } else if (formatted.includes("rice") || formatted.includes("oat") || formatted.includes("roti") || formatted.includes("bread") || formatted.includes("carb")) {
+        estCal = 340; estP = 8; estC = 72; estF = 1.5;
+        suffix = "Starch Element";
+      } else if (formatted.includes("cake") || formatted.includes("cookie") || formatted.includes("sweet") || formatted.includes("dessert") || formatted.includes("sugar") || formatted.includes("jamun")) {
+        estCal = 380; estP = 4; estC = 68; estF = 11;
+        suffix = "Sweet Variant";
+      } else if (formatted.includes("oil") || formatted.includes("butter") || formatted.includes("nut") || formatted.includes("peanut")) {
+        estCal = 620; estP = 18; estC = 14; estF = 52;
+        suffix = "Fat/Lipid Source";
+      }
+
       return [
-        { name: `${formatted} (Organic Standard)`, calories: 140, protein: 4.5, carbs: 12.0, fat: 5.5 },
-        { name: `${formatted} (Low Calorie Alternative)`, calories: 85, protein: 2.0, carbs: 8.5, fat: 1.0 },
-        { name: `${formatted} (Premium Quality Cooked)`, calories: 195, protein: 8.0, carbs: 18.0, fat: 8.5 }
+        { name: `${foodName} (${suffix} Standard)`, calories: estCal, protein: estP, carbs: estC, fat: estF },
+        { name: `${foodName} (Light / Low-Cal Alternative)`, calories: Math.round(estCal * 0.65), protein: Math.round(estP * 0.9 * 10)/10, carbs: Math.round(estC * 0.6 * 10)/10, fat: Math.round(estF * 0.5 * 10)/10 },
+        { name: `${foodName} (Premium/Double Ingredient Portion)`, calories: Math.round(estCal * 1.25), protein: Math.round(estP * 1.1 * 10)/10, carbs: Math.round(estC * 1.15 * 10)/10, fat: Math.round(estF * 1.3 * 10)/10 }
       ];
     }
 
