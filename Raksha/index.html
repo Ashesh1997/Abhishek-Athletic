@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAKSHA'S ATHLETIC // PERFORMANCE PORTAL</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      letter-spacing: -0.01em;
+    }
+    .monospace {
+      font-family: 'Space Grotesk', monospace;
+    }
+    .printed-sheet {
+      background: #ffffff;
+      color: #111111;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.03);
+      aspect-ratio: 1 / 1.414; /* Standard A4 proportion */
+      max-width: 850px;
+      margin: 0 auto;
+    }
+    /* Elegant Rose-Charcoal cover texture */
+    .charcoal-cover {
+      background-color: #141112;
+      background-image: radial-gradient(circle at 50% 50%, #1e1819 0%, #0d0a0b 100%);
+      color: #ffffff;
+      position: relative;
+      overflow: hidden;
+    }
+    .charcoal-cover::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0.03;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+    @media (max-width: 1024px) {
+      .printed-sheet {
+        aspect-ratio: auto;
+      }
+    }
+    input, select {
+      outline: none;
+      transition: all 0.2s ease-in-out;
+    }
+    input:focus, select:focus {
+      border-color: #e11d48;
+      box-shadow: 0 0 0 1px #e11d48;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    @media print {
+      body {
+        background: white !important;
+        color: black !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .printed-sheet {
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        page-break-after: always;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        aspect-ratio: auto !important;
+      }
+      .print-layout {
+        display: block !important;
+      }
+      .single-view-layout {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-[#F8F9FA] text-[#111111] antialiased min-h-screen flex flex-col transition-colors duration-300">
+
+  <!-- Interactive Control Header -->
+  <header class="no-print bg-white border-b border-[#E5E5E5] sticky top-0 z-50 px-4 py-3 sm:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-2.5 h-2.5 bg-rose-600 rounded-full animate-pulse"></div>
+      <span class="monospace text-xs font-bold uppercase tracking-widest text-[#555555]">RAKSHA'S ATHLETIC // CONSISTENCY ENGINE</span>
+    </div>
+    
+    <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+      <button id="viewToggleBtn" onclick="toggleViewMode()" class="px-3 py-1.5 border border-[#CCCCCC] rounded-md text-xs font-semibold hover:bg-[#F6F6F6] transition-all flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+        <span>Show All Pages</span>
+      </button>
+
+      <button onclick="window.print()" class="px-4 py-1.5 bg-neutral-900 text-white rounded-md text-xs font-semibold hover:bg-neutral-800 transition-all flex items-center gap-1.5 shadow-sm">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <span>Export PDF / Print</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Navigation tabs (Visible only in single view mode) -->
+  <nav id="singleViewNav" class="no-print bg-white border-b border-[#E5E5E5] px-4 py-1.5 overflow-x-auto flex gap-1 no-scrollbar">
+    <button onclick="switchTab(0)" class="tab-btn px-4 py-2 text-xs font-bold uppercase tracking-wider border-b-2 border-rose-600 text-black shrink-0">00 Cover</button>
+    <button onclick="switchTab(1)" class="tab-btn px-4 py-2 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-[#555555] hover:text-black shrink-0">01 Monthly Focus</button>
+    <button onclick="switchTab(2)" class="tab-btn px-4 py-2 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-[#555555] hover:text-black shrink-0">02 Fueling Engine</button>
+    <button onclick="switchTab(3)" class="tab-btn px-4 py-2 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-[#555555] hover:text-black shrink-0">03 Month 1 split</button>
+    <button onclick="switchTab(4)" class="tab-btn px-4 py-2 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-[#555555] hover:text-black shrink-0">04 Progression (M2)</button>
+    <button onclick="switchTab(5)" class="tab-btn px-4 py-2 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-[#555555] hover:text-black shrink-0">05 Success Rules</button>
+  </nav>
+
+  <!-- main sheet viewports -->
+  <main class="flex-grow p-4 sm:p-6 md:p-8 overflow-y-auto">
+
+    <!-- SINGLE SHEET VIEW CONTAINER -->
+    <div id="singleViewContainer" class="single-view-layout block">
+      
+      <!-- PAGE 0: COVER SHEET -->
+      <div id="sheet-0" class="sheet-page printed-sheet charcoal-cover p-8 sm:p-12 flex flex-col justify-between border border-[#222222]">
+        <div class="flex justify-between items-center border-b border-[#333333] pb-4 z-10">
+          <span class="monospace text-[10px] font-bold tracking-widest text-[#999999]">ATHLETE COMPOSITION PROFILE</span>
+          <span class="monospace text-[10px] font-bold tracking-widest text-[#FFFFFF]">RAKSHA'S ATHLETIC</span>
+        </div>
+        
+        <div class="my-auto py-10 z-10">
+          <h1 class="text-5xl sm:text-6xl font-black tracking-tighter uppercase leading-[0.9] mb-1 text-white">ATHLETIC<br><span class="text-rose-500">RECOMP</span></h1>
+          <div class="h-1 bg-rose-600 w-full my-6"></div>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 text-neutral-200">
+            <div class="space-y-3">
+              <span class="monospace text-[10px] font-bold uppercase text-[#999999] tracking-widest block border-b border-rose-600 pb-1">ATHLETE BIOMETRICS</span>
+              <div class="flex justify-between items-center text-xs">
+                <span>STARTING WEIGHT:</span>
+                <span class="font-bold monospace text-white" id="coverWeight">70.7 KG</span>
+              </div>
+              <div class="flex justify-between items-center text-xs">
+                <span>EST. BODY FAT:</span>
+                <span class="font-bold monospace text-white" id="coverBF">37.9%</span>
+              </div>
+              <div class="flex justify-between items-center text-xs">
+                <span>MUSCLE MASS:</span>
+                <span class="font-bold monospace text-white" id="coverMuscle">23.7 KG</span>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <span class="monospace text-[10px] font-bold uppercase text-[#999999] tracking-widest block border-b border-rose-600 pb-1">PROGRAM FOCUS</span>
+              <div class="flex justify-between items-center text-xs">
+                <span>PRIMARY TRACK:</span>
+                <span class="font-bold uppercase tracking-wider text-white" id="coverGoal">Consistency &amp; Fat Loss</span>
+              </div>
+              <div class="flex justify-between items-center text-xs">
+                <span>SYSTEM TARGETS:</span>
+                <span class="font-bold uppercase tracking-wider text-white">Flexibility, Core, Movement</span>
+              </div>
+              <div class="flex justify-between items-center text-xs">
+                <span>INTENSITY DEGREE:</span>
+                <span class="font-bold monospace text-white">BEGINNER-SAFE REBUILD</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-end border-t border-[#333333] pt-8 z-10">
+          <p class="text-xs text-[#999999] leading-relaxed max-w-sm">
+            This performance manual outlines a structured physical realignment designed to drop body fat safely to 35-36% within 8-12 weeks. Focused on core stabilization, progressive mobility, low impact strength adaptation, and steady step density tracking.
+          </p>
+          <div class="text-right flex flex-col justify-end items-end h-full">
+            <span class="text-[120px] font-black leading-none tracking-tighter text-rose-500 select-none">01</span>
+            <span class="monospace text-[10px] font-bold tracking-widest text-[#999999] mt-2">MONTHLY BLOCK // RAKSHA'S PORTAL</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 1: OVERVIEW SHEET -->
+      <div id="sheet-1" class="sheet-page printed-sheet hidden p-8 sm:p-12 flex flex-col justify-between border border-[#E5E5E5]">
+        <div class="flex justify-between items-center border-b border-[#CCCCCC] pb-4">
+          <span class="monospace text-[10px] font-bold tracking-widest text-[#555555]">SCENE 1 // MONTH 1 TARGETS</span>
+          <span class="monospace text-[10px] font-bold tracking-widest text-[#555555]">RAKSHA'S ATHLETIC</span>
+        </div>
+
+        <div class="my-6 space-y-6 overflow-y-auto no-scrollbar max-h-[85%]">
+          <div>
+            <h2 class="text-3xl font-extrabold uppercase tracking-tight text-neutral-900">Month 1 Framework</h2>
+            <p class="text-[11px] text-[#555555] mt-1 leading-relaxed">
+              We focus on gradual metabolic acceleration without burning out or causing high soreness levels. Consistent daily movement and a structured 4-day workout habit are the main variables.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="border border-rose-200 p-4 space-y-3 bg-white rounded-lg shadow-sm">
+              <span class="monospace text-xs font-bold uppercase tracking-wider text-rose-600 block border-b border-rose-100 pb-1">KEY TARGETS</span>
+              <ul class="text-xs space-y-2 text-neutral-700">
+                <li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-rose-500 rounded-full"></span> Lose 1.5–3 kg body weight gradually</li>
+                <li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-rose-500 rounded-full"></span> Reduce overall body fat by 1.5–3%</li>
+                <li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-rose-500 rounded-full"></span> Improve core resilience &amp; mobility limits</li>
+                <li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-rose-500 rounded-full"></span> Maintain a strict 4-day workout schedule</li>
+              </ul>
+            </div>
+
+            <div class="border border-neutral-300 p-4 space-y-3 bg-white rounded-lg shadow-sm">
+              <span class="monospace text-xs font-bold uppercase tracking-wider text-black block border-b border-neutral-200 pb-1">STEP PROGRESSION PLAN</span>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div class="p-2 bg-neutral-50 rounded border border-neutral-200 text-center">
+                  <span class="block text-[10px] text-neutral-500">WEEK 1</span>
+                  <strong>6,000 Steps / Day</strong>
+                </div>
+                <div class="p-2 bg-neutral-50 rounded border border-neutral-200 text-center">
+                  <span class="block text-[10px] text-neutral-500">WEEK 2</span>
+                  <strong>7,000 Steps / Day</strong>
+                </div>
+                <div class="p-2 bg-neutral-50 rounded border border-neutral-200 text-center">
+                  <span class="block text-[10px] text-neutral-500">WEEK 3</span>
+                  <strong>8,000 Steps / Day</strong>
+                </div>
+                <div class="p-2 bg-neutral-50 rounded border border-neutral-200 text-center">
+                  <span class="block text-[10px] text-neutral-500">WEEK 4</span>
+                  <strong>10,000 Steps / Day</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <span class="monospace text-[10px] font-bold uppercase text-black tracking-widest block border-b border-neutral-300 pb-1">WEEKLY TRACKING LAYOUT</span>
+            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 text-center text-[11px]">
+              <div class="p-2.5 border border-rose-200 bg-rose-50/30 rounded-md font-medium"><strong class="block text-rose-600 uppercase">MON</strong> Day 1 Strength</div>
+              <div class="p-2.5 border border-neutral-200 bg-white rounded-md"><strong class="block text-neutral-800 uppercase">TUE</strong> Day 2 Mobility</div>
+              <div class="p-2.5 border border-dashed border-rose-300 bg-white rounded-md text-[#555555]"><strong class="block text-neutral-400 uppercase">WED</strong> Rest + Walk</div>
+              <div class="p-2.5 border border-rose-200 bg-rose-50/30 rounded-md font-medium"><strong class="block text-rose-600 uppercase">THU</strong> Day 3 Conditioning</div>
+              <div class="p-2.5 border border-dashed border-rose-300 bg-white rounded-md text-[#555555]"><strong class="block text-neutral-400 uppercase">FRI</strong> Rest + Walk</div>
+              <div class="p-2.5 border border-neutral-200 bg-white rounded-md"><strong class="block text-neutral-800 uppercase">SAT</strong> Day 4 Circuit</div>
+              <div class="p-2.5 border border-dashed border-rose-300 bg-white rounded-md text-[#555555]"><strong class="block text-neutral-400 uppercase">SUN</strong> Rest + Walk</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center border-t border-[#CCCCCC] pt-4 mt-auto">
+          <span class="monospace text-[10px] font-bold text-[#555555]">WEEK 1-4 // WEEKLY OUTLINE</span>
+          <span class="monospace text-[10px] font-bold text-[#555555]">PAGE 1 // RAKSHA'S ATHLETIC</span>
+        </div>
+      </div>
+
+      <!-- PAGE 2: FUELING ENGINE SHEET -->
+      <div id="sheet-2" class="sheet-page printed-sheet hidden p-8 sm:p-12 flex flex-col justify-between border border-[#E5E5E5]">
+        <div class="flex justify-between items-center border-b border-[#CCCCCC] pb-4">
+          <span class="monospace text-[10px] font-bold tracking-widest text-[#555555]">SCENE 2 // FUELING ENGINE</span>
+          <span class="monospace text-[10px] font-bold tracking-widest text-[#555555]">RAKSHA'S ATHLETIC</span>
+        </div>
+
+        <div class="my-6 space-y-4 overflow-y-auto no-scrollbar max-h-[85%]">
+          <div>
+            <h2 class="text-3xl font-extrabold uppercase tracking-tight">Fueling &amp; Nutrition</h2>
+            <p class="text-[11px] text-[#555555] mt-1 leading-relaxed">
+              We maintain a steady protein intake target of **90–110g daily** to support recovery, prevent muscle mass breakdown, and stimulate progressive fat loss.
+            </p>
+          </div>
+
+          <!-- Dynamic Macro Targets (Bound to JS) -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="border border-neutral-900 p-4 bg-neutral-900 text-white rounded-lg space-y-3 shadow-md">
+              <div class="flex justify-between items-center border-b border-neutral-800 pb-1.5">
+                <span class="monospace text-xs font-bold uppercase tracking-wider text-rose-400">TRAINING CO-EFFICIENT</span>
+                <span class="text-[9px] font-bold bg-neutral-800 text-neutral-300 px-2 py-0.5 rounded">Active Focus</span>
+              </div>
+              <div class="text-2xl font-black monospace text-rose-100" id="trainCalsRange">1650 - 1850 kcal</div>
+              <div class="space-y-1.5 text-xs text-neutral-300">
+                <div class="flex justify-between"><span>Protein Target:</span><span class="font-bold monospace text-white" id="trainProtein">100g</span></div>
+                <div class="flex justify-between"><span>Carbohydrates:</span><span class="font-bold monospace text-white" id="trainCarbs">150g - 170g</span></div>
+                <div class="flex justify-between"><span>Fats:</span><span class="font-bold monospace text-white" id="trainFats">50g - 55g</span></div>
+              </div>
+            </div>
+
+            <div class="border border-[#CCCCCC] p-4 bg-white rounded-lg space-y-3 shadow-sm">
+              <div class="flex justify-between items-center border-b border-[#E5E5E5] pb-1.5">
+                <span class="monospace text-xs font-bold uppercase tracking-wider text-neutral-700">REST CO-EFFICIENT</span>
+                <span class="text-[9px] font-bold bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded">Recovery Focus</span>
+              </div>
+              <div class="text-2xl font-black monospace text-neutral-950" id="restCalsRange">1450 - 1600 kcal</div>
+              <div class="space-y-1.5 text-xs text-neutral-600">
+                <div class="flex justify-between"><span>Protein Target:</span><span class="font-bold monospace text-neutral-950" id="restProtein">100g</span></div>
+                <div class="flex justify-between"><span>Carbohydrates:</span><span class="font-bold monospace text-neutral-950" id="restCarbs">125g - 145g</span></div>
+                <div class="flex justify-between"><span>Fats:</span><span class="font-bold monospace text-neutral-950" id="restFats">45g - 50g</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Structured Daily Meals Blueprint -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-neutral-50 p-4 border border-neutral-200 rounded-lg space-y-2">
+              <span class="monospace text-[10px] font-bold uppercase text-rose-600 block border-b border-rose-100 pb-1">MEAL STRUCTURE OPTIONS</span>
+              <div class="text-[11px] space-y-2 text-neutral-700">
+                <p><strong>Breakfast:</strong> Poha with chopped vegetables + boiled eggs // Oats cooked with milk, topped with fruits // Paneer Bhurji + 1 wholewheat Roti.</p>
+                <p><strong>Lunch:</strong> 1 bowl of cooked Dal + 2 wholewheat Roti + large green Salad + 1 bowl of fresh Curd.</p>
+                <p><strong>Evening:</strong> 1 serving of seasonal Fruit + 1 cup of Green Tea (no sugar).</p>
+                <p><strong>Dinner:</strong> 1 bowl of Dal + 2 Roti + Grilled Paneer/Chicken/Fish + raw/steamed Salad.</p>
+              </div>
+            </div>
+
+            <div class="bg-rose-50/20 p-4 border border-rose-100 rounded-lg space-y-2">
+              <span class="monospace text-[10px] font-bold uppercase text-neutral-800 block border-b border-neutral-200 pb-1">DIETARY SYSTEM FOCUS</span>
+              <div class="text-[11px] space-y-1 text-neutral-700">
+                <p class="font-semibold text-rose-600">Primary Protein Sources:</p>
+                <p>Eggs, Paneer, Chicken, Fish, Whey Protein, Soy Chunks, Greek Yogurt.</p>
+                <p class="font-semibold text-neutral-800 mt-2">Exclude from Diet:</p>
+                <p>Sugary drinks, deep-fried snacks, excess confectionery sweets, frequent restaurant food, alcohol.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Input Dashboard -->
+          <div class="bg-[#FAFAFA] p-3 border border-[#E5E5E5] space-y-2.5 rounded-lg">
+            <div class="flex justify-between items-center border-b border-[#E5E5E5] pb-1">
+              <span class="monospace text-[10px] font-bold uppercase tracking-wider text-neutral-800">Composition Adjustment Tool</span>
+              <div class="flex items-center gap-1.5">
+                <span id="cloudStatusDot" class="w-2 h-2 rounded-full bg-neutral-400"></span>
+                <span id="cloudStatus" class="monospace text-[8px] font-bold uppercase tracking-wider text-neutral-500">Not Connected</span>
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div>
+                <label class="block text-[8px] font-bold uppercase tracking-wider text-[#555555] mb-1">Weight (KG)</label>
+                <input type="number" id="nutWeight" value="70.7" step="0.1" oninput="runCustomCalc()" class="w-full bg-white border border-[#CCCCCC] text-xs px-2.5 py-1.5 font-medium rounded">
+              </div>
+              <div>
+                <label class="block text-[8px] font-bold uppercase tracking-wider text-[#555555] mb-1">Body Fat (%)</label>
+                <input type="number" id="nutBF" value="37.9" step="0.1" oninput="runCustomCalc()" class="w-full bg-white border border-[#CCCCCC] text-xs px-2.5 py-1.5 font-medium rounded">
+              </div>
+              <div>
+                <label class="block text-[8px] font-bold uppercase tracking-wider text-[#555555] mb-1">Height (CM)</label>
+                <input type="number" id="nutHeight" value="163" oninput="runCustomCalc()" class="w-full bg-white border border-[#CCCCCC] text-xs px-2.5 py-1.5 font-medium rounded">
+              </div>
+              <div>
+                <label class="block text-[8px] font-bold uppercase tracking-wider text-[#555555] mb-1">Age (Years)</label>
+                <input type="number" id="nutAge" value="28" oninput="runCustomCalc()" class="w-full bg-white border border-[#CCCCCC] text-xs px-2.5 py-1.5 font-medium rounded">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+              <div>
+                <label class="block text-[8px] font-bold uppercase tracking-wider text-[#555555] mb-1">Gender</label>
+                <select id="nutGender" onchange="runCustomCalc()" class="w-full bg-white border border-[#CCCCCC] text-xs px-2.5 py-1.5 font-medium rounded">
+                  <option value="male">Male</option>
+                  <option value="female" selected>Female</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[8px] font-bold uppercase tracking-wider text-[#555555] mb-1">Activity Coefficient</label>
+                <select id="nutActivity" onchange="runCustomCalc()" class="w-full bg-white border border-[#CCCCCC] text-xs px-2.5 py-1.5 font-medium rounded">
+                  <option value="1.375" selected>Moderate Exercise (1.375)</option>
+                  <option value="1.55">Heavy Athletic Workout (1.55)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[8px] font-bold uppercase tracking-wider text-[#555555] mb-1">Composition Goal</label>
+                <select id="nutGoal" onchange="runCustomCalc()" class="w-full bg-white border border-[#CCCCCC] text-xs px-2.5 py-1.5 font-medium rounded">
+                  <option value="athletic" selected>Safe Deficit / High Consistency</option>
+                  <option value="loss">Maximum Fat Shred</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Intermediary calculation parameters -->
+            <div class="grid grid-cols-3 gap-2 pt-2 border-t border-[#E5E5E5] text-center font-bold">
+              <div class="p-2 bg-white rounded border border-[#E5E5E5]">
+                <span class="block text-[8px] font-bold uppercase text-[#555555]">Lean Body Mass</span>
+                <span id="calculatedLBM" class="block text-xs font-bold monospace text-rose-600">43.9 kg</span>
+              </div>
+              <div class="p-2 bg-white rounded border border-[#E5E5E5]">
+                <span class="block text-[8px] font-bold uppercase text-[#555555]">Katch-McArdle BMR</span>
+                <span id="calculatedBMR" class="block text-xs font-bold monospace">1318 kcal</span>
+              </div>
+              <div class="p-2 bg-white rounded border border-[#E5E5E5]">
+                <span class="block text-[8px] font-bold uppercase text-[#555555]">Estimated TDEE</span>
+                <span id="calculatedTDEE" class="block text-xs font-bold monospace">1812 kcal</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center border-t border-[#CCCCCC] pt-4 mt-auto">
+          <span class="monospace text-[10px] font-bold text-[#555555]">MONTH 1 // FUELING CALIBRATIONS</span>
+          <span class="monospace text-[10px] font-bold text-[#555555]">PAGE 2 // RAKSHA'S ATHLETIC</span>
+        </div>
+      </div>
+
+      <!-- PAGE 3: PHASE 1 SHEET (MONTH 1 SPLIT) -->
+      <div id="sheet-3" class="sheet-page printed-sheet hidden p-8 sm:p-12 flex flex-col justify-between border border-[#E5E5E5]">
+        <!-- Page Header -->
+        <div class="flex justify-between items-center border-b border-[#CCCCCC] pb-3">
+          <span class="monospace text-[10px] font-bold tracking-widest text-rose-600">MONTH 1 // WEEKLY ROUTINE</span>
+          <span class="monospace text-[10px] font-bold tracking-widest text-[#555555]">RAKSHA'S ATHLETIC</span>
+        </div>
+
+        <div class="my-4 space-y-4 flex-grow overflow-y-auto no-scrollbar">
+          <!-- Day Sub-Tabs inside Page 3 -->
+          <div class="flex gap-1 border-b border-neutral-200 overflow-x-auto no-scrollbar">
+            <button onclick="switchP1Day('mon')" id="btn-p1-mon" class="p1-day-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-rose-600 text-rose-600 shrink-0">Mon (D1)</button>
+            <button onclick="switchP1Day('tue')" id="btn-p1-tue" class="p1-day-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-transparent text-[#555555] shrink-0">Tue (D2)</button>
+            <button onclick="switchP1Day('wed')" id="btn-p1-wed" class="p1-day-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-transparent text-[#555555] shrink-0">Wed (Rec)</button>
+            <button onclick="switchP1Day('thu')" id="btn-p1-thu" class="p1-day-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-transparent text-[#555555] shrink-0">Thu (D3)</button>
+            <button onclick="switchP1Day('fri')" id="btn-p1-fri" class="p1-day-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-transparent text-[#555555] shrink-0">Fri (Rec)</button>
+            <button onclick="switchP1Day('sat')" id="btn-p1-sat" class="p1-day-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-transparent text-[#555555] shrink-0">Sat (D4)</button>
+          </div>
+
+          <!-- MONDAY VIEW (DAY 1) -->
+          <div id="p1-day-mon" class="p1-day-view space-y-4">
+            <div>
+              <div class="bg-neutral-900 text-white px-3 py-1.5 flex justify-between text-[9px] font-bold uppercase tracking-widest rounded">
+                <span>DAY 1</span>
+                <span>FULL BODY STRENGTH</span>
+                <span>WEEK 1-4</span>
+              </div>
+              <div class="mt-2.5 p-3 bg-neutral-50 rounded border border-neutral-200 text-xs text-neutral-600">
+                <strong>Warm-Up (5 min):</strong> March in place (1 min), Arm circles (30s), Hip circles (30s), Bodyweight squats (15 reps), Walking lunges (10 steps).
+              </div>
+            </div>
+            
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="text-[9px] uppercase tracking-wider text-[#555555] border-b border-[#CCCCCC]">
+                  <th class="py-1 w-6">Done</th>
+                  <th class="py-1">EXERCISE</th>
+                  <th class="py-1 text-center w-12">SETS</th>
+                  <th class="py-1 text-center w-12">REPS</th>
+                  <th class="py-1 pl-4">TARGET &amp; COACH'S NOTES</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[#E5E5E5]">
+                <tr>
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Bodyweight Squats</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">12</td>
+                  <td class="py-2 pl-4 text-[#555555]">Focus on depth and glute squeeze at top</td>
+                </tr>
+                <tr>
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Incline Push-Ups</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">10</td>
+                  <td class="py-2 pl-4 text-[#555555]">Use a bench or elevated block to manage load</td>
+                </tr>
+                <tr>
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Glute Bridges</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">15</td>
+                  <td class="py-2 pl-4 text-[#555555]">Maintain flat back at the floor position</td>
+                </tr>
+                <tr class="bg-rose-50/10">
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Dumbbell Rows</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">12</td>
+                  <td class="py-2 pl-4 text-[#555555]">Pull to hip line, control the stretch</td>
+                </tr>
+                <tr class="bg-rose-50/10">
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Step-Ups</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">10 / leg</td>
+                  <td class="py-2 pl-4 text-[#555555]">Drive with your leading leg strictly</td>
+                </tr>
+                <tr class="bg-rose-50/10">
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Dumbbell Shoulder Press</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">12</td>
+                  <td class="py-2 pl-4 text-[#555555]">Keep lower core braced while pressing</td>
+                </tr>
+                <tr class="bg-neutral-900 text-white rounded">
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold">FINISHER: Brisk Walk</td>
+                  <td class="py-2 text-center monospace">1</td>
+                  <td class="py-2 text-center monospace">10 min</td>
+                  <td class="py-2 pl-4 text-neutral-300">Cool down stretching directly after this</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="p-3 bg-rose-50/20 border border-rose-100 rounded text-xs text-[#555555]">
+              <strong>Post-Workout Static Stretching:</strong> Hamstrings (45s), Hip Flexors (45s), Chest (45s).
+            </div>
+          </div>
+
+          <!-- TUESDAY VIEW (DAY 2) -->
+          <div id="p1-day-tue" class="p1-day-view hidden space-y-4">
+            <div>
+              <div class="bg-neutral-900 text-white px-3 py-1.5 flex justify-between text-[9px] font-bold uppercase tracking-widest rounded">
+                <span>DAY 2</span>
+                <span>MOBILITY + CORE</span>
+                <span>WEEK 1-4</span>
+              </div>
+              <h3 class="text-lg font-black uppercase mt-2 text-rose-600 tracking-tight">Decompression &amp; Core Control</h3>
+            </div>
+            
+            <div class="space-y-3">
+              <div class="border border-neutral-200 p-3 bg-white rounded shadow-sm">
+                <span class="monospace text-[9px] font-bold uppercase text-neutral-500 block border-b border-neutral-100 pb-1">MOBILITY FLOW (2 ROUNDS)</span>
+                <table class="w-full text-left text-xs mt-2">
+                  <tbody>
+                    <tr class="border-b border-neutral-100"><td class="py-1 font-semibold text-neutral-700">Cat-Cow</td><td class="py-1 text-center font-medium">10 reps</td><td class="py-1 pl-4 text-neutral-500">Synchronize breathing</td></tr>
+                    <tr class="border-b border-neutral-100"><td class="py-1 font-semibold text-neutral-700">World's Greatest Stretch</td><td class="py-1 text-center font-medium">5 / side</td><td class="py-1 pl-4 text-neutral-500">Hold top rotation for 2s</td></tr>
+                    <tr class="border-b border-neutral-100"><td class="py-1 font-semibold text-neutral-700">Deep Squat Hold</td><td class="py-1 text-center font-medium">30 sec</td><td class="py-1 pl-4 text-neutral-500">Keep heels flat on the floor</td></tr>
+                    <tr class="border-b border-neutral-100"><td class="py-1 font-semibold text-neutral-700">Downward Dog</td><td class="py-1 text-center font-medium">30 sec</td><td class="py-1 pl-4 text-neutral-500">Press chest back towards toes</td></tr>
+                    <tr><td class="py-1 font-semibold text-neutral-700">Cobra Stretch</td><td class="py-1 text-center font-medium">30 sec</td><td class="py-1 pl-4 text-neutral-500">Decompress abdominal tissue</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="border border-rose-100 p-3 bg-rose-50/10 rounded shadow-sm">
+                <span class="monospace text-[9px] font-bold uppercase text-rose-600 block border-b border-rose-100 pb-1">STABILIZATION TARGETS (3 ROUNDS)</span>
+                <table class="w-full text-left text-xs mt-2">
+                  <tbody>
+                    <tr class="border-b border-neutral-100"><td class="py-1.5 font-semibold text-neutral-800">Dead Bug</td><td class="py-1.5 text-center font-medium">3 &times; 12</td><td class="py-1.5 pl-4 text-neutral-500">Keep lower back pressed flat into floor</td></tr>
+                    <tr class="border-b border-neutral-100"><td class="py-1.5 font-semibold text-neutral-800">Bird Dog</td><td class="py-1.5 text-center font-medium">3 &times; 10</td><td class="py-1.5 pl-4 text-neutral-500">Do not arch lower spine at extension</td></tr>
+                    <tr class="border-b border-neutral-100"><td class="py-1.5 font-semibold text-neutral-800">Plank Hold</td><td class="py-1.5 text-center font-medium">3 &times; 20s</td><td class="py-1.5 pl-4 text-neutral-500">Squeeze glutes and core maximally</td></tr>
+                    <tr><td class="py-1.5 font-semibold text-neutral-800">Side Plank Hold</td><td class="py-1.5 text-center font-medium">2 &times; 20s</td><td class="py-1.5 pl-4 text-neutral-500">Support on forearm, stack feet safely</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="p-3.5 bg-neutral-900 text-white rounded text-xs flex justify-between items-center">
+              <div>
+                <span class="block text-[8px] monospace text-rose-400 uppercase">ENDURANCE FINISHER</span>
+                <strong class="text-sm">Brisk Walk Recovery Session</strong>
+              </div>
+              <span class="monospace text-xs font-bold bg-neutral-800 px-3 py-1 rounded border border-neutral-700">20 - 30 MINS</span>
+            </div>
+          </div>
+
+          <!-- WEDNESDAY VIEW (RECOVERY) -->
+          <div id="p1-day-wed" class="p1-day-view hidden space-y-4">
+            <div>
+              <div class="bg-neutral-900 text-white px-3 py-1.5 flex justify-between text-[9px] font-bold uppercase tracking-widest rounded">
+                <span>DAY 3</span>
+                <span>ACTIVE REST &amp; RECOVERY</span>
+                <span>WEEK 1-4</span>
+              </div>
+              <h3 class="text-xl font-black uppercase mt-2 text-rose-600 tracking-tight">Active Decompression Matrix</h3>
+            </div>
+            <div class="space-y-4">
+              <div class="bg-rose-50/20 p-4 border border-rose-100 space-y-2 rounded-lg text-xs">
+                <span class="monospace text-[9px] font-bold uppercase text-rose-600">METABOLIC REBUILD ENGINE</span>
+                <p class="text-neutral-700">
+                  Perform <strong class="text-neutral-950">steady nasal-breathing walking</strong> targeting your week's specific step limits. Avoid heavy lifts or circuit stress today to allow skeletal muscle repair.
+                </p>
+              </div>
+              <div class="border border-neutral-200 p-4 bg-white space-y-3 rounded-lg text-xs">
+                <span class="monospace text-[10px] font-bold uppercase text-[#555555] block">STATIC MOBILITY FOCUS</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-neutral-600">
+                  <div>&bull; <strong>Hamstring Stretch:</strong> 60s / side</div>
+                  <div>&bull; <strong>Couch/Hip Flexor Stretch:</strong> 45s / side</div>
+                  <div>&bull; <strong>Adductor/Butterfly Stretch:</strong> 60s dynamic hold</div>
+                  <div>&bull; <strong>Shoulder &amp; Lat Stretch:</strong> 45s deep hold</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- THURSDAY VIEW (DAY 3) -->
+          <div id="p1-day-thu" class="p1-day-view hidden space-y-4">
+            <div>
+              <div class="bg-neutral-900 text-white px-3 py-1.5 flex justify-between text-[9px] font-bold uppercase tracking-widest rounded">
+                <span>DAY 4</span>
+                <span>LOWER BODY + CONDITIONING</span>
+                <span>WEEK 1-4</span>
+              </div>
+              <div class="mt-2.5 p-3 bg-neutral-50 rounded border border-neutral-200 text-xs text-neutral-600">
+                <strong>Warm-Up (5 min):</strong> 5-minute easy pacing walk followed by 10 bodyweight air squats.
+              </div>
+            </div>
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="text-[9px] uppercase tracking-wider text-[#555555] border-b border-[#CCCCCC]">
+                  <th class="py-1 w-6">Done</th>
+                  <th class="py-1">EXERCISE</th>
+                  <th class="py-1 text-center w-12">SETS</th>
+                  <th class="py-1 text-center w-12">REPS</th>
+                  <th class="py-1 pl-4">TARGET &amp; COACH'S NOTES</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[#E5E5E5]">
+                <tr>
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Goblet Squat</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">12</td>
+                  <td class="py-2 pl-4 text-[#555555]">Hold a light dumbbell at your chest securely</td>
+                </tr>
+                <tr>
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Romanian Deadlift</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">12</td>
+                  <td class="py-2 pl-4 text-[#555555]">Hinge at hips, keep back flat, slide weights on thighs</td>
+                </tr>
+                <tr>
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Reverse Lunges</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">10 / leg</td>
+                  <td class="py-2 pl-4 text-[#555555]">Step backward cleanly, maintain hip alignment</td>
+                </tr>
+                <tr>
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Glute Bridge Hold</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">30s</td>
+                  <td class="py-2 pl-4 text-[#555555]">Constant squeeze at hip lockout</td>
+                </tr>
+                <tr class="bg-rose-50/10">
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Step-Ups (Cond.)</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">15</td>
+                  <td class="py-2 pl-4 text-[#555555]">Brisk mechanical transitions</td>
+                </tr>
+                <tr class="bg-rose-50/10">
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Mountain Climbers</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">20</td>
+                  <td class="py-2 pl-4 text-[#555555]">Strict knee-to-elbow drive, steady speed</td>
+                </tr>
+                <tr class="bg-rose-50/10">
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Jumping Jacks</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">30</td>
+                  <td class="py-2 pl-4 text-[#555555]">Land on toes softly to protect knee joints</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="p-3 bg-neutral-950 text-neutral-200 rounded text-[11px]">
+              <strong>Conditioning Set Layout:</strong> Complete Step-Ups, Mountain Climbers, and Jumping Jacks back-to-back as 1 round. Rest 60s. Repeat for 3 rounds.
+            </div>
+          </div>
+
+          <!-- FRIDAY VIEW (RECOVERY) -->
+          <div id="p1-day-fri" class="p1-day-view hidden space-y-4">
+            <div>
+              <div class="bg-neutral-900 text-white px-3 py-1.5 flex justify-between text-[9px] font-bold uppercase tracking-widest rounded">
+                <span>DAY 5</span>
+                <span>ACTIVE REST &amp; DECOMPRESSION</span>
+                <span>WEEK 1-4</span>
+              </div>
+              <h3 class="text-xl font-black uppercase mt-2 text-rose-600 tracking-tight">Active Recovery Matrix</h3>
+            </div>
+            <div class="space-y-4">
+              <div class="bg-rose-50/20 p-4 border border-rose-100 space-y-2 rounded-lg text-xs">
+                <span class="monospace text-[9px] font-bold uppercase text-rose-600">NEURAL RECHARGE FOCUS</span>
+                <p class="text-neutral-700">
+                  Keep movement light and focus on continuous lymphatic drainage. Hydrate extensively today to prepare your nervous system for the athletic fitness day tomorrow.
+                </p>
+              </div>
+              <div class="border border-neutral-200 p-4 bg-white rounded-lg text-xs space-y-2">
+                <p>&bull; <strong>Brisk walking:</strong> Hit your daily step guidelines safely.</p>
+                <p>&bull; <strong>Deep breathing exercises:</strong> 5-10 minutes of nasal boxed breathing.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- SATURDAY VIEW (DAY 4) -->
+          <div id="p1-day-sat" class="p1-day-sat-view hidden space-y-4">
+            <div>
+              <div class="bg-neutral-900 text-white px-3 py-1.5 flex justify-between text-[9px] font-bold uppercase tracking-widest rounded">
+                <span>DAY 6</span>
+                <span>ATHLETIC FITNESS DAY</span>
+                <span>WEEK 1-4</span>
+              </div>
+              <h3 class="text-xl font-black uppercase mt-2 text-neutral-800 tracking-tight">Beginner Athletic Circuit</h3>
+            </div>
+            
+            <div class="space-y-4">
+              <div class="border border-neutral-900 p-4 bg-white rounded-lg space-y-3 shadow-sm">
+                <span class="monospace text-xs font-bold uppercase text-rose-600 block border-b border-rose-100 pb-1">ATHLETIC METABOLIC CIRCUIT (4 ROUNDS)</span>
+                <table class="w-full text-left text-xs">
+                  <thead>
+                    <tr class="text-[9px] uppercase tracking-wider text-[#555555] border-b border-neutral-200">
+                      <th class="py-1">EXERCISE</th>
+                      <th class="py-1 text-center w-16">TARGET</th>
+                      <th class="py-1 pl-4">MOVEMENT NOTES</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-[#E5E5E5]">
+                    <tr><td class="py-2 font-bold text-neutral-800">Bodyweight Squats</td><td class="py-2 text-center font-semibold text-rose-600">15 reps</td><td class="py-2 pl-4 text-neutral-500">Steady tempo, keep hips balanced</td></tr>
+                    <tr><td class="py-2 font-bold text-neutral-800">Walking Lunges</td><td class="py-2 text-center font-semibold text-rose-600">20 steps</td><td class="py-2 pl-4 text-neutral-500">10 steps per leg, step wide</td></tr>
+                    <tr><td class="py-2 font-bold text-neutral-800">Elevated Push-Ups</td><td class="py-2 text-center font-semibold text-rose-600">10 reps</td><td class="py-2 pl-4 text-neutral-500">Control descent to protect elbows</td></tr>
+                    <tr><td class="py-2 font-bold text-neutral-800">Dumbbell Rows</td><td class="py-2 text-center font-semibold text-rose-600">12 reps</td><td class="py-2 pl-4 text-neutral-500">Pull shoulders back fully</td></tr>
+                    <tr><td class="py-2 font-bold text-neutral-800">High Knees</td><td class="py-2 text-center font-semibold text-rose-600">30 sec</td><td class="py-2 pl-4 text-neutral-500">Fast transitions on the spot</td></tr>
+                    <tr><td class="py-2 font-bold text-neutral-800">Plank Hold</td><td class="py-2 text-center font-semibold text-rose-600">30 sec</td><td class="py-2 pl-4 text-neutral-500">Strict abdominal bracing</td></tr>
+                  </tbody>
+                </table>
+                <div class="text-[10px] text-[#555555] italic">Rest for 90 seconds after completing a full round of the above. Run 4 rounds.</div>
+              </div>
+
+              <div class="border border-neutral-200 p-4 bg-neutral-50 rounded-lg space-y-2 text-xs text-[#555555]">
+                <span class="monospace text-[9px] font-bold uppercase text-neutral-800 block border-b border-neutral-200 pb-1">FLEXIBILITY BLOCK (2 ROUNDS)</span>
+                <div class="grid grid-cols-2 gap-x-4 gap-y-1.5 mt-2">
+                  <p>&bull; <strong>Butterfly Stretch:</strong> 45 sec</p>
+                  <p>&bull; <strong>Pigeon Stretch:</strong> 45 sec / side</p>
+                  <p>&bull; <strong>Hamstring Stretch:</strong> 45 sec</p>
+                  <p>&bull; <strong>Child's Pose:</strong> 60 sec</p>
+                  <p>&bull; <strong>Quad Stretch:</strong> 45 sec / side</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="flex justify-between items-center border-t border-[#CCCCCC] pt-3 mt-auto">
+          <span class="monospace text-[10px] font-bold text-[#555555]">PAGE 3</span>
+          <span class="monospace text-[10px] font-bold text-[#555555]">RAKSHA'S ATHLETIC</span>
+        </div>
+      </div>
+
+      <!-- PAGE 4: PHASE 2 SHEET (MONTH 2 PROGRESSION) -->
+      <div id="sheet-4" class="sheet-page printed-sheet hidden p-8 sm:p-12 flex flex-col justify-between border border-[#E5E5E5]">
+        <!-- Page Header -->
+        <div class="flex justify-between items-center border-b border-[#CCCCCC] pb-3">
+          <span class="monospace text-[10px] font-bold tracking-widest text-rose-600">MONTH 2 // PROGRESSION ROUTINE</span>
+          <span class="monospace text-[10px] font-bold tracking-widest text-[#555555]">RAKSHA'S ATHLETIC</span>
+        </div>
+
+        <div class="my-4 space-y-4 flex-grow overflow-y-auto no-scrollbar">
+          <!-- Day Sub-Tabs inside Page 4 -->
+          <div class="flex gap-1 border-b border-neutral-200 overflow-x-auto no-scrollbar">
+            <button onclick="switchP2Day('mon')" id="btn-p2-mon" class="p2-day-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-rose-600 text-rose-600 shrink-0">Mon (D1)</button>
+            <button onclick="switchP2Day('tue')" id="btn-p2-tue" class="p2-day-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-transparent text-[#555555] shrink-0">Tue (D2)</button>
+            <button onclick="switchP2Day('wed')" id="btn-p2-wed" class="p2-day-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-transparent text-[#555555] shrink-0">Wed (Rec)</button>
+            <button onclick="switchP2Day('thu')" id="btn-p2-thu" class="p2-day-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-transparent text-[#555555] shrink-0">Thu (D3)</button>
+            <button onclick="switchP2Day('fri')" id="btn-p2-fri" class="p2-day-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-transparent text-[#555555] shrink-0">Fri (Rec)</button>
+            <button onclick="switchP2Day('sat')" id="btn-p2-sat" class="p2-day-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-transparent text-[#555555] shrink-0">Sat (D4)</button>
+          </div>
+
+          <!-- MONDAY VIEW (DAY 1 PROGRESSION) -->
+          <div id="p2-day-mon" class="p2-day-view space-y-4">
+            <div>
+              <div class="bg-neutral-900 text-white px-3 py-1.5 flex justify-between text-[9px] font-bold uppercase tracking-widest rounded">
+                <span>DAY 1 (MONTH 2)</span>
+                <span>ADVANCED STRENGTH FOCUS</span>
+                <span>WEEK 5-8</span>
+              </div>
+              <p class="text-[11px] text-[#555555] mt-2">
+                We safely introduce eccentric tempo controls (3-second descents) to improve muscle quality and density without joint stress.
+              </p>
+            </div>
+            
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="text-[9px] uppercase tracking-wider text-[#555555] border-b border-[#CCCCCC]">
+                  <th class="py-1 w-6">Done</th>
+                  <th class="py-1">EXERCISE</th>
+                  <th class="py-1 text-center w-12">SETS</th>
+                  <th class="py-1 text-center w-12">REPS</th>
+                  <th class="py-1 pl-4">TARGET &amp; COACH'S PROGRESSIONS</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[#E5E5E5]">
+                <tr>
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Goblet Squat</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">12</td>
+                  <td class="py-2 pl-4 text-[#555555]">Add light weight dumbbell if comfortable</td>
+                </tr>
+                <tr>
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Incline DB Chest Press</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">12</td>
+                  <td class="py-2 pl-4 text-[#555555]">Dumbbell chest loading instead of push-ups</td>
+                </tr>
+                <tr>
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Glute Bridges with Pulses</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">15</td>
+                  <td class="py-2 pl-4 text-[#555555]">Add mini band resistance above knees if possible</td>
+                </tr>
+                <tr class="bg-rose-50/10">
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Dumbbell Row</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">12</td>
+                  <td class="py-2 pl-4 text-[#555555]">3-second slow descent on back extension</td>
+                </tr>
+                <tr class="bg-rose-50/10">
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Weighted Step-Ups</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">10 / leg</td>
+                  <td class="py-2 pl-4 text-[#555555]">Hold 2-3kg dumbbells at your sides cleanly</td>
+                </tr>
+                <tr class="bg-rose-50/10">
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Dumbbell Shoulder Press</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">12</td>
+                  <td class="py-2 pl-4 text-[#555555]">Focus on straight arm overhead extension</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- TUESDAY VIEW (DAY 2 PROGRESSION) -->
+          <div id="p2-day-tue" class="p2-day-view hidden space-y-4">
+            <div>
+              <div class="bg-neutral-900 text-white px-3 py-1.5 flex justify-between text-[9px] font-bold uppercase tracking-widest rounded">
+                <span>DAY 2 (MONTH 2)</span>
+                <span>MOBILITY + STABILITY STRETCH</span>
+                <span>WEEK 5-8</span>
+              </div>
+              <h3 class="text-xl font-black uppercase mt-2 text-rose-600 tracking-tight">Postural Core Adaptation</h3>
+            </div>
+            
+            <div class="space-y-4">
+              <div class="border border-neutral-200 p-4 bg-white rounded-lg space-y-2 text-xs">
+                <span class="monospace text-[9px] font-bold uppercase text-[#555555] block">EXPANDED MOBILITY FLOW (3 ROUNDS)</span>
+                <p>&bull; <strong>Cat-Cow:</strong> 12 reps</p>
+                <p>&bull; <strong>World's Greatest Stretch:</strong> 6 reps / side</p>
+                <p>&bull; <strong>Deep Squat Hold with T-Rotation:</strong> 40 sec</p>
+                <p>&bull; <strong>Cobra to Child's Pose transition:</strong> 60 sec</p>
+              </div>
+
+              <div class="border border-rose-100 p-4 bg-rose-50/10 rounded-lg space-y-2 text-xs">
+                <span class="monospace text-[9px] font-bold uppercase text-rose-600 block">CORE STABILIZATION PROGRESSION (3 ROUNDS)</span>
+                <p>&bull; <strong>Dead Bug (slow-tempo):</strong> 3 &times; 15 reps</p>
+                <p>&bull; <strong>Bird Dog (2s hold at extension):</strong> 3 &times; 12 reps</p>
+                <p>&bull; <strong>Plank Hold:</strong> 3 &times; 30 sec (10s increase)</p>
+                <p>&bull; <strong>Side Plank Hold:</strong> 2 &times; 30 sec / side</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- WEDNESDAY VIEW (RECOVERY PROGRESSION) -->
+          <div id="p2-day-wed" class="p2-day-view hidden space-y-4">
+            <div>
+              <div class="bg-neutral-900 text-white px-3 py-1.5 flex justify-between text-[9px] font-bold uppercase tracking-widest rounded">
+                <span>DAY 3 (MONTH 2)</span>
+                <span>SYSTEM RESET</span>
+                <span>WEEK 5-8</span>
+              </div>
+              <h3 class="text-xl font-black uppercase mt-2 text-rose-600 tracking-tight">Steady Capillary Conditioning</h3>
+            </div>
+            <div class="space-y-4 text-xs">
+              <div class="bg-neutral-50 p-4 border border-neutral-200 space-y-1.5 rounded-lg">
+                <span class="monospace text-[9px] font-bold uppercase text-[#555555]">AEROBIC THRESHOLD TRAINING</span>
+                <p class="font-semibold">60 minutes of low-intensity continuous movement</p>
+                <p class="text-[#555555]">
+                  Maintains cardiorespiratory adaptations. Set step tracker to hit week 3/4 guidelines seamlessly on your phone.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- THURSDAY VIEW (DAY 3 PROGRESSION) -->
+          <div id="p2-day-thu" class="p2-day-view hidden space-y-4">
+            <div>
+              <div class="bg-neutral-900 text-white px-3 py-1.5 flex justify-between text-[9px] font-bold uppercase tracking-widest rounded">
+                <span>DAY 4 (MONTH 2)</span>
+                <span>LOWER RECOMP + METABOLIC DENSITY</span>
+                <span>WEEK 5-8</span>
+              </div>
+              <h3 class="text-xl font-black uppercase mt-2 text-neutral-800 tracking-tight">Strength &amp; Caloric Conditioning</h3>
+            </div>
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="text-[9px] uppercase tracking-wider text-[#555555] border-b border-[#CCCCCC]">
+                  <th class="py-1 w-6">Done</th>
+                  <th class="py-1">EXERCISE</th>
+                  <th class="py-1 text-center w-12">SETS</th>
+                  <th class="py-1 text-center w-12">REPS</th>
+                  <th class="py-1 pl-4">TARGET &amp; COACH'S PROGRESSIONS</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[#E5E5E5]">
+                <tr>
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Goblet Squat (Tempo)</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">15</td>
+                  <td class="py-2 pl-4 text-[#555555]">3-second descent to stimulate quad recruitment</td>
+                </tr>
+                <tr>
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Romanian Deadlift</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">12</td>
+                  <td class="py-2 pl-4 text-[#555555]">Focus on deep hamstring contraction</td>
+                </tr>
+                <tr>
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Reverse Lunges</td>
+                  <td class="py-2 text-center monospace">3</td>
+                  <td class="py-2 text-center monospace">12 / leg</td>
+                  <td class="py-2 pl-4 text-[#555555]">Step distance increases, keep spine vertical</td>
+                </tr>
+                <tr class="bg-rose-50/10">
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Step-Ups (Fast)</td>
+                  <td class="py-2 text-center monospace">4</td>
+                  <td class="py-2 text-center monospace">15</td>
+                  <td class="py-2 pl-4 text-[#555555]">Higher step block, lock knees completely at top</td>
+                </tr>
+                <tr class="bg-rose-50/10">
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Mountain Climbers</td>
+                  <td class="py-2 text-center monospace">4</td>
+                  <td class="py-2 text-center monospace">25</td>
+                  <td class="py-2 pl-4 text-[#555555]">Keep core fully tight to prevent pelvic drops</td>
+                </tr>
+                <tr class="bg-rose-50/10">
+                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-rose-600"></td>
+                  <td class="py-2 font-bold text-neutral-800">Jumping Jacks</td>
+                  <td class="py-2 text-center monospace">4</td>
+                  <td class="py-2 text-center monospace">35</td>
+                  <td class="py-2 pl-4 text-[#555555]">4 rounds total of the conditioning group now</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- FRIDAY VIEW (RECOVERY PROGRESSION) -->
+          <div id="p2-day-fri" class="p2-day-view hidden space-y-4">
+            <div>
+              <div class="bg-neutral-900 text-white px-3 py-1.5 flex justify-between text-[9px] font-bold uppercase tracking-widest rounded">
+                <span>DAY 5 (MONTH 2)</span>
+                <span>DECOMPRESSION MATRIX</span>
+                <span>WEEK 5-8</span>
+              </div>
+              <h3 class="text-xl font-black uppercase mt-2 text-rose-600 tracking-tight">Active Neural Recovery</h3>
+            </div>
+            <div class="space-y-4 text-xs">
+              <div class="bg-neutral-50 p-4 border border-neutral-200 rounded-lg">
+                <p class="font-medium">Focused foam rolling &amp; hydration today. Keep physical strain minimal.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- SATURDAY VIEW (DAY 4 PROGRESSION) -->
+          <div id="p2-day-sat" class="p2-day-view hidden space-y-4">
+            <div>
+              <div class="bg-neutral-900 text-white px-3 py-1.5 flex justify-between text-[9px] font-bold uppercase tracking-widest rounded">
+                <span>DAY 6 (MONTH 2)</span>
+                <span>ATHLETIC CIRCUITS LEVEL 2</span>
+                <span>WEEK 5-8</span>
+              </div>
+              <h3 class="text-xl font-black uppercase mt-2 text-neutral-800 tracking-tight">Athletic Conditioning Phase 2</h3>
+            </div>
+            
+            <div class="space-y-4">
+              <div class="border border-neutral-900 p-4 bg-white rounded-lg space-y-3 shadow-sm">
+                <span class="monospace text-xs font-bold uppercase text-rose-600 block border-b border-rose-100 pb-1">ATHLETIC METABOLIC CIRCUIT (5 ROUNDS)</span>
+                <table class="w-full text-left text-xs">
+                  <thead>
+                    <tr class="text-[9px] uppercase tracking-wider text-[#555555] border-b border-neutral-200">
+                      <th class="py-1">EXERCISE</th>
+                      <th class="py-1 text-center w-16">TARGET</th>
+                      <th class="py-1 pl-4">MOVEMENT NOTES</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-[#E5E5E5]">
+                    <tr><td class="py-2 font-bold text-neutral-800">Bodyweight Squats</td><td class="py-2 text-center font-semibold text-rose-600">15 reps</td><td class="py-2 pl-4 text-neutral-500">Perfect depth alignment</td></tr>
+                    <tr><td class="py-2 font-bold text-neutral-800">Walking Lunges</td><td class="py-2 text-center font-semibold text-rose-600">20 steps</td><td class="py-2 pl-4 text-neutral-500">Continuous step control, no stops</td></tr>
+                    <tr><td class="py-2 font-bold text-neutral-800">Incline Push-Ups</td><td class="py-2 text-center font-semibold text-rose-600">10 reps</td><td class="py-2 pl-4 text-neutral-500">Squeeze chest muscles at expansion</td></tr>
+                    <tr><td class="py-2 font-bold text-neutral-800">Dumbbell Rows</td><td class="py-2 text-center font-semibold text-rose-600">12 reps</td><td class="py-2 pl-4 text-neutral-500">Retract scapula cleanly</td></tr>
+                    <tr><td class="py-2 font-bold text-neutral-800">High Knees</td><td class="py-2 text-center font-semibold text-rose-600">45 sec</td><td class="py-2 pl-4 text-neutral-500">Time limit increased by 15s</td></tr>
+                    <tr><td class="py-2 font-bold text-neutral-800">Plank Hold</td><td class="py-2 text-center font-semibold text-rose-600">40 sec</td><td class="py-2 pl-4 text-neutral-500">Constant bracing tension</td></tr>
+                  </tbody>
+                </table>
+                <div class="text-[10px] text-[#555555] italic">Rest 90 sec after completing a full round. Total target is 5 rounds (1 round increase).</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="flex justify-between items-center border-t border-[#CCCCCC] pt-3 mt-auto">
+          <span class="monospace text-[10px] font-bold text-[#555555]">PAGE 4</span>
+          <span class="monospace text-[10px] font-bold text-[#555555]">RAKSHA'S ATHLETIC</span>
+        </div>
+      </div>
+
+      <!-- PAGE 5: ELITE SUCCESS MANUAL -->
+      <div id="sheet-5" class="sheet-page printed-sheet hidden p-8 sm:p-12 flex flex-col justify-between border border-[#E5E5E5]">
+        <div class="flex justify-between items-center border-b border-[#CCCCCC] pb-4">
+          <span class="monospace text-[10px] font-bold tracking-widest text-rose-600">MONTH 1 SUCCESS MANUAL</span>
+          <span class="monospace text-[10px] font-bold tracking-widest text-[#555555]">RAKSHA'S ATHLETIC</span>
+        </div>
+
+        <div class="my-6 space-y-6 overflow-y-auto no-scrollbar max-h-[85%]">
+          <div>
+            <h2 class="text-3xl font-extrabold uppercase tracking-tight text-neutral-900">Success Rules</h2>
+            <p class="text-[11px] text-[#555555] mt-1 leading-relaxed">
+              At 37.9% body fat, consistency is your ultimate physiological multiplier. Apply these core principles to ensure complete metabolic adaptation during Month 1.
+            </p>
+          </div>
+
+          <div class="space-y-4">
+            <!-- Rule 1 -->
+            <div class="border-l-2 border-rose-500 pl-4 py-1 space-y-1">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-rose-600">01. Never Miss Two in a Row</h3>
+              <p class="text-[11px] text-[#555555] leading-relaxed">
+                Consistency over perfection. If a session is interrupted, ensure the following scheduled workout is executed without fail to protect the training habit.
+              </p>
+            </div>
+
+            <!-- Rule 2 -->
+            <div class="border-l-2 border-rose-500 pl-4 py-1 space-y-1">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-rose-600">02. Cumulative Daily Walking</h3>
+              <p class="text-[11px] text-[#555555] leading-relaxed">
+                Walk every single day. Non-exercise thermogenesis (NEAT) controls the majority of your daily calorie expenditure. Track weekly steps: 6k to 10k goal progression.
+              </p>
+            </div>
+
+            <!-- Rule 3 -->
+            <div class="border-l-2 border-rose-500 pl-4 py-1 space-y-1">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-rose-600">03. High-Quality Sleep (7-8 hours)</h3>
+              <p class="text-[11px] text-[#555555] leading-relaxed">
+                Fat loss and muscle repair occur during deep delta sleep phases. Hormonal balance, specifically ghrelin and cortisol control, requires a strict 7-8 hour schedule.
+              </p>
+            </div>
+
+            <!-- Rule 4 -->
+            <div class="border-l-2 border-rose-500 pl-4 py-1 space-y-1">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-rose-600">04. Adequate Hydration (2.5-3 Liters)</h3>
+              <p class="text-[11px] text-[#555555] leading-relaxed">
+                Drinking 2.5–3 liters of water daily helps flush byproducts of fat burning, maintains muscle hydration, and controls hunger levels during your caloric deficit.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center border-t border-[#CCCCCC] pt-4 mt-auto">
+          <span class="monospace text-[10px] font-bold text-[#555555]">MONTH 1 SUCCESS MANUAL // SPEC</span>
+          <span class="monospace text-[10px] font-bold text-[#555555]">PAGE 5 // RAKSHA'S ATHLETIC</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CONTINUOUS ALL-PAGES PRINT VIEW -->
+    <div id="printViewContainer" class="print-layout hidden space-y-12">
+      <!-- Generated Dynamically via JS in 'Show All Pages' mode -->
+    </div>
+
+  </main>
+
+  <footer class="no-print bg-white border-t border-[#E5E5E5] py-4 text-center text-[10px] uppercase tracking-widest text-[#555555] monospace">
+    Raksha's Athletic &copy; 2026 // Consistency Recomp System
+  </footer>
+
+  <!-- PLATFORM BUSINESS LOGIC SYSTEMS WITH FIRESTORE PERSISTENCE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // Application Setup Variables
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'rakshas-athletic-recomp';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' 
+      ? JSON.parse(__firebase_config) 
+      : {
+          apiKey: "AIzaSyFakeConfigFallbackKeyForLocalPreviews",
+          authDomain: "rakshas-athletic.firebaseapp.com",
+          projectId: "rakshas-athletic",
+          storageBucket: "rakshas-athletic.appspot.com",
+          messagingSenderId: "1234567890",
+          appId: "1:1234567890:web:1234567890"
+        };
+
+    let activeTabIdx = 0;
+    let isAllPagesMode = false;
+    let isInitialLoad = false;
+    let auth, db, userId;
+    let saveTimeout;
+
+    // Cached outputs from macro calculation to feed standard metrics
+    let activeCalculations = {
+      trainCals: 1750,
+      restCals: 1520,
+      trainCarbs: 160,
+      restCarbs: 135,
+      protein: 100,
+      trainFats: 52,
+      restFats: 47
+    };
+
+    // Toggle navigation panels
+    function switchTab(index) {
+      activeTabIdx = index;
+      
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      tabBtns.forEach((btn, idx) => {
+        if (idx === index) {
+          btn.classList.add('border-rose-600', 'text-black');
+          btn.classList.remove('border-transparent', 'text-[#555555]');
+        } else {
+          btn.classList.remove('border-rose-600', 'text-black');
+          btn.classList.add('border-transparent', 'text-[#555555]');
+        }
+      });
+
+      const sheets = document.querySelectorAll('.sheet-page');
+      sheets.forEach((sheet, idx) => {
+        if (idx === index) {
+          sheet.classList.remove('hidden');
+          sheet.classList.add('block');
+        } else {
+          sheet.classList.add('hidden');
+          sheet.classList.remove('block');
+        }
+      });
+    }
+
+    // Dynamic Phase Day Switchers
+    function switchP1Day(day) {
+      const btns = document.querySelectorAll('.p1-day-btn');
+      btns.forEach(btn => {
+        btn.classList.remove('border-rose-600', 'text-rose-600');
+        btn.classList.add('border-transparent', 'text-[#555555]');
+      });
+      const targetBtn = document.getElementById(`btn-p1-${day}`);
+      if (targetBtn) {
+        targetBtn.classList.add('border-rose-600', 'text-rose-600');
+        targetBtn.classList.remove('border-transparent', 'text-[#555555]');
+      }
+
+      const views = document.querySelectorAll('.p1-day-view, .p1-day-sat-view');
+      views.forEach(view => view.classList.add('hidden'));
+      
+      let targetView;
+      if (day === 'sat') {
+        targetView = document.querySelector('.p1-day-sat-view');
+      } else {
+        targetView = document.getElementById(`p1-day-${day}`);
+      }
+      if (targetView) {
+        targetView.classList.remove('hidden');
+      }
+    }
+
+    function switchP2Day(day) {
+      const btns = document.querySelectorAll('.p2-day-btn');
+      btns.forEach(btn => {
+        btn.classList.remove('border-rose-600', 'text-rose-600');
+        btn.classList.add('border-transparent', 'text-[#555555]');
+      });
+      const targetBtn = document.getElementById(`btn-p2-${day}`);
+      if (targetBtn) {
+        targetBtn.classList.add('border-rose-600', 'text-rose-600');
+        targetBtn.classList.remove('border-transparent', 'text-[#555555]');
+      }
+
+      const views = document.querySelectorAll('.p2-day-view');
+      views.forEach(view => view.classList.add('hidden'));
+      const targetView = document.getElementById(`p2-day-${day}`);
+      if (targetView) {
+        targetView.classList.remove('hidden');
+      }
+    }
+
+    // Continuous print preview generator
+    function toggleViewMode() {
+      isAllPagesMode = !isAllPagesMode;
+      const viewToggleBtn = document.getElementById('viewToggleBtn');
+      const singleViewContainer = document.getElementById('singleViewContainer');
+      const printViewContainer = document.getElementById('printViewContainer');
+      const singleViewNav = document.getElementById('singleViewNav');
+
+      if (isAllPagesMode) {
+        viewToggleBtn.innerHTML = `
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <span>Single Sheet View</span>
+        `;
+        
+        singleViewContainer.classList.add('hidden');
+        singleViewContainer.classList.remove('block');
+        singleViewNav.classList.add('hidden');
+        
+        printViewContainer.classList.remove('hidden');
+        printViewContainer.classList.add('block');
+
+        // Render sequential page modules
+        printViewContainer.innerHTML = '';
+        for (let i = 0; i <= 5; i++) {
+          const original = document.getElementById(`sheet-${i}`);
+          const clone = original.cloneNode(true);
+          clone.classList.remove('hidden', 'sheet-page');
+          clone.classList.add('block', 'mb-12');
+          
+          if (i === 2) {
+            clone.querySelectorAll('#nutWeight')?.forEach(el => el.setAttribute('disabled', 'true'));
+            clone.querySelectorAll('#nutBF')?.forEach(el => el.setAttribute('disabled', 'true'));
+            clone.querySelectorAll('#nutHeight')?.forEach(el => el.setAttribute('disabled', 'true'));
+            clone.querySelectorAll('#nutAge')?.forEach(el => el.setAttribute('disabled', 'true'));
+            clone.querySelectorAll('#nutGender')?.forEach(el => el.setAttribute('disabled', 'true'));
+            clone.querySelectorAll('#nutActivity')?.forEach(el => el.setAttribute('disabled', 'true'));
+            clone.querySelectorAll('#nutGoal')?.forEach(el => el.setAttribute('disabled', 'true'));
+          }
+          printViewContainer.appendChild(clone);
+        }
+      } else {
+        viewToggleBtn.innerHTML = `
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+          <span>Show All Pages</span>
+        `;
+        
+        printViewContainer.classList.add('hidden');
+        printViewContainer.classList.remove('block');
+        
+        singleViewContainer.classList.remove('hidden');
+        singleViewContainer.classList.add('block');
+        singleViewNav.classList.remove('hidden');
+
+        switchTab(activeTabIdx);
+      }
+    }
+
+    // Comprehensive Interactive Weight & Body Fat Updates
+    function runCustomCalc() {
+      const weightVal = parseFloat(document.getElementById('nutWeight').value) || 70.7;
+      const bfVal = parseFloat(document.getElementById('nutBF').value) || 37.9;
+      const heightVal = parseFloat(document.getElementById('nutHeight').value) || 163;
+      const ageVal = parseInt(document.getElementById('nutAge').value) || 28;
+      const activityCoeff = parseFloat(document.getElementById('nutActivity').value) || 1.375;
+      const goalType = document.getElementById('nutGoal').value;
+
+      // Katch-McArdle Formula (Optimized for Lean Body Mass)
+      const lbm = weightVal * (1 - (bfVal / 100));
+      const bmr = 370 + (21.6 * lbm);
+      const tdee = bmr * activityCoeff;
+
+      // Update intermediate status badges
+      document.getElementById('calculatedLBM').textContent = `${lbm.toFixed(1)} kg`;
+      document.getElementById('calculatedBMR').textContent = `${Math.round(bmr)} kcal`;
+      document.getElementById('calculatedTDEE').textContent = `${Math.round(tdee)} kcal`;
+
+      let trainCalsBase = 1750;
+      let restCalsBase = 1520;
+
+      if (goalType === 'athletic') {
+        trainCalsBase = tdee;
+        restCalsBase = tdee - 300;
+        document.getElementById('coverGoal').textContent = "Consistency & Fat Loss";
+      } else if (goalType === 'loss') {
+        trainCalsBase = tdee - 200;
+        restCalsBase = tdee - 450;
+        document.getElementById('coverGoal').textContent = "Targeted Deficit / Recomp";
+      }
+
+      // Safe bounds protection for beginner profile
+      trainCalsBase = Math.max(1400, trainCalsBase);
+      restCalsBase = Math.max(1200, restCalsBase);
+
+      const trainCalsMin = Math.round(trainCalsBase - 75);
+      const trainCalsMax = Math.round(trainCalsBase + 75);
+      const restCalsMin = Math.round(restCalsBase - 75);
+      const restCalsMax = Math.round(restCalsBase + 75);
+
+      // Target Protein Range tailored strictly to her beginner preference (90-110g)
+      // We scale it naturally around 1.4g per kg to yield exactly ~100g protein
+      const proteinTarget = Math.round(weightVal * 1.41); 
+
+      const trainFatGramMin = Math.round((trainCalsMin * 0.25) / 9);
+      const trainFatGramMax = Math.round((trainCalsMax * 0.27) / 9);
+      const restFatGramMin = Math.round((restCalsMin * 0.28) / 9);
+      const restFatGramMax = Math.round((restCalsMax * 0.30) / 9);
+
+      const trainCarbMin = Math.round((trainCalsMin - (proteinTarget * 4) - (trainFatGramMin * 9)) / 4);
+      const trainCarbMax = Math.round((trainCalsMax - (proteinTarget * 4) - (trainFatGramMax * 9)) / 4);
+
+      const restCarbMin = Math.round((restCalsMin - (proteinTarget * 4) - (restFatGramMin * 9)) / 4);
+      const restCarbMax = Math.round((restCalsMax - (proteinTarget * 4) - (restFatGramMax * 9)) / 4);
+
+      // Update cached projections
+      activeCalculations.trainCals = Math.round(trainCalsBase);
+      activeCalculations.restCals = Math.round(restCalsBase);
+      activeCalculations.trainCarbs = Math.round((trainCarbMin + trainCarbMax) / 2);
+      activeCalculations.restCarbs = Math.round((restCarbMin + restCarbMax) / 2);
+      activeCalculations.trainFats = Math.round((trainFatGramMin + trainFatGramMax) / 2);
+      activeCalculations.restFats = Math.round((restFatGramMin + restFatGramMax) / 2);
+      activeCalculations.protein = proteinTarget;
+
+      // Render calculations back into fields
+      document.getElementById('trainCalsRange').textContent = `${trainCalsMin} - ${trainCalsMax} kcal`;
+      document.getElementById('trainProtein').textContent = `${proteinTarget}g`;
+      document.getElementById('trainCarbs').textContent = `${Math.max(20, trainCarbMin)}g - ${Math.max(40, trainCarbMax)}g`;
+      document.getElementById('trainFats').textContent = `${trainFatGramMin}g - ${trainFatGramMax}g`;
+
+      document.getElementById('restCalsRange').textContent = `${restCalsMin} - ${restCalsMax} kcal`;
+      document.getElementById('restProtein').textContent = `${proteinTarget}g`;
+      document.getElementById('restCarbs').textContent = `${Math.max(10, restCarbMin)}g - ${Math.max(30, restCarbMax)}g`;
+      document.getElementById('restFats').textContent = `${restFatGramMin}g - ${restFatGramMax}g`;
+
+      // Update Page 0 Biometrics cards
+      document.getElementById('coverWeight').textContent = `${weightVal.toFixed(1)} KG`;
+      document.getElementById('coverBF').textContent = `${bfVal.toFixed(1)}%`;
+      document.getElementById('coverMuscle').textContent = `${(weightVal * (1 - (bfVal / 100)) * 0.54).toFixed(1)} KG`; // estimated skeletal muscle mass scaling
+
+      if (!isInitialLoad) {
+        triggerCloudSave();
+      }
+    }
+
+    // Safe Firebase Persisted Document Saver (autosave with debounce)
+    async function saveProfileToCloud() {
+      if (!db || !userId) return;
+
+      const statusEl = document.getElementById('cloudStatus');
+      const dotEl = document.getElementById('cloudStatusDot');
+      if (statusEl) {
+        statusEl.textContent = 'Saving...';
+        statusEl.className = 'monospace text-[8px] font-bold uppercase tracking-wider text-amber-500';
+      }
+      if (dotEl) {
+        dotEl.className = 'w-2 h-2 rounded-full bg-amber-400 animate-pulse';
+      }
+
+      const profileData = {
+        weight: parseFloat(document.getElementById('nutWeight').value),
+        bf: parseFloat(document.getElementById('nutBF').value),
+        height: parseFloat(document.getElementById('nutHeight').value),
+        age: parseInt(document.getElementById('nutAge').value),
+        gender: document.getElementById('nutGender').value,
+        activity: parseFloat(document.getElementById('nutActivity').value),
+        goal: document.getElementById('nutGoal').value,
+        updatedAt: new Date().toISOString()
+      };
+
+      try {
+        // RULE 1: Strict collection paths
+        const docRef = doc(db, 'artifacts', appId, 'users', userId, 'profile', 'biometrics');
+        await setDoc(docRef, profileData);
+        
+        if (statusEl) {
+          statusEl.textContent = 'Synced';
+          statusEl.className = 'monospace text-[8px] font-bold uppercase tracking-wider text-emerald-600';
+        }
+        if (dotEl) {
+          dotEl.className = 'w-2 h-2 rounded-full bg-emerald-500';
+        }
+      } catch (err) {
+        console.error("Cloud synchronization failed: ", err);
+        if (statusEl) {
+          statusEl.textContent = 'Sync Failed';
+          statusEl.className = 'monospace text-[8px] font-bold uppercase tracking-wider text-rose-500';
+        }
+        if (dotEl) {
+          dotEl.className = 'w-2 h-2 rounded-full bg-rose-500';
+        }
+      }
+    }
+
+    function triggerCloudSave() {
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(saveProfileToCloud, 1000); // 1-second delay debounce
+    }
+
+    // App system initializer on page ready
+    async function initPlatformEngine() {
+      const statusEl = document.getElementById('cloudStatus');
+      const dotEl = document.getElementById('cloudStatusDot');
+      
+      if (statusEl) statusEl.textContent = 'Connecting...';
+      if (dotEl) dotEl.className = 'w-2 h-2 rounded-full bg-blue-400 animate-pulse';
+
+      // Instantiate Firebase SDK Module
+      const app = initializeApp(firebaseConfig);
+      auth = getAuth(app);
+      db = getFirestore(app);
+
+      try {
+        // RULE 3: Strict auth gate sequencing before any DB actions
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+      } catch (e) {
+        console.warn("Secure authentication exception, resolving to anonymous fallback: ", e);
+        try {
+          await signInAnonymously(auth);
+        } catch (anonErr) {
+          console.error("Authentication totally blocked: ", anonErr);
+          if (statusEl) {
+            statusEl.textContent = 'Offline Mode';
+            statusEl.className = 'monospace text-[8px] font-bold uppercase tracking-wider text-rose-500';
+          }
+          if (dotEl) {
+            dotEl.className = 'w-2 h-2 rounded-full bg-rose-400';
+          }
+          runCustomCalc();
+          return;
+        }
+      }
+
+      userId = auth.currentUser?.uid;
+      if (statusEl) statusEl.textContent = 'Synced Profile';
+
+      try {
+        // Retrieve cloud document
+        const docRef = doc(db, 'artifacts', appId, 'users', userId, 'profile', 'biometrics');
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const cloudData = docSnap.data();
+          isInitialLoad = true;
+
+          document.getElementById('nutWeight').value = cloudData.weight ?? 70.7;
+          document.getElementById('nutBF').value = cloudData.bf ?? 37.9;
+          document.getElementById('nutHeight').value = cloudData.height ?? 163;
+          document.getElementById('nutAge').value = cloudData.age ?? 28;
+          document.getElementById('nutGender').value = cloudData.gender ?? 'female';
+          document.getElementById('nutActivity').value = cloudData.activity ?? 1.375;
+          document.getElementById('nutGoal').value = cloudData.goal ?? 'athletic';
+
+          runCustomCalc();
+          isInitialLoad = false;
+
+          if (statusEl) {
+            statusEl.textContent = 'Synced';
+            statusEl.className = 'monospace text-[8px] font-bold uppercase tracking-wider text-emerald-600';
+          }
+          if (dotEl) {
+            dotEl.className = 'w-2 h-2 rounded-full bg-emerald-500';
+          }
+        } else {
+          isInitialLoad = true;
+          runCustomCalc();
+          isInitialLoad = false;
+          await saveProfileToCloud();
+        }
+      } catch (err) {
+        console.error("Failed to query user document: ", err);
+        if (statusEl) {
+          statusEl.textContent = 'Offline Mode';
+          statusEl.className = 'monospace text-[8px] font-bold uppercase tracking-wider text-rose-500';
+        }
+        if (dotEl) {
+          dotEl.className = 'w-2 h-2 rounded-full bg-rose-400';
+        }
+        isInitialLoad = true;
+        runCustomCalc();
+        isInitialLoad = false;
+      }
+    }
+
+    // Attach essential page trigger actions to the window object for inline HTML event access
+    window.switchTab = switchTab;
+    window.switchP1Day = switchP1Day;
+    window.switchP2Day = switchP2Day;
+    window.toggleViewMode = toggleViewMode;
+    window.runCustomCalc = runCustomCalc;
+
+    window.onload = function() {
+      initPlatformEngine();
+    }
+  </script>
+</body>
+</html>
