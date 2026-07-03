@@ -795,13 +795,23 @@
       <div id="sheet-4" class="sheet-page printed-sheet hidden p-8 sm:p-12 flex flex-col justify-between border border-[#E5E5E5]">
         <!-- Page Header -->
         <div class="flex justify-between items-center border-b border-[#CCCCCC] pb-3">
-          <span class="monospace text-[10px] font-bold tracking-widest text-[#555555]">PHASE 2 // WEEKS 6-10</span>
+          <span class="monospace text-[10px] font-bold tracking-widest text-[#555555]" id="p2-header-week">PHASE 2 // WEEK 6</span>
           <span class="monospace text-[10px] font-bold tracking-widest text-[#555555]">ABHISHEK'S ATHLETIC</span>
         </div>
 
-        <div class="my-4 space-y-4 flex-grow overflow-y-auto no-scrollbar">
+        <div class="my-4 space-y-3 flex-grow flex flex-col min-h-0 overflow-hidden">
+          
+          <!-- Week Sub-Tabs -->
+          <div class="flex gap-1 border-b border-neutral-200 overflow-x-auto no-scrollbar pb-1 shrink-0">
+            <button onclick="switchP2Week(6)" id="btn-p2-w6" class="p2-week-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-black text-black shrink-0">Week 6</button>
+            <button onclick="switchP2Week(7)" id="btn-p2-w7" class="p2-week-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-transparent text-[#555555] shrink-0">Week 7</button>
+            <button onclick="switchP2Week(8)" id="btn-p2-w8" class="p2-week-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-transparent text-[#555555] shrink-0">Week 8</button>
+            <button onclick="switchP2Week(9)" id="btn-p2-w9" class="p2-week-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-transparent text-[#555555] shrink-0">Week 9</button>
+            <button onclick="switchP2Week(10)" id="btn-p2-w10" class="p2-week-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-transparent text-[#555555] shrink-0">Week 10</button>
+          </div>
+
           <!-- Day Sub-Tabs inside Page 4 -->
-          <div class="flex gap-1 border-b border-neutral-200 overflow-x-auto no-scrollbar">
+          <div class="flex gap-1 border-b border-neutral-200 overflow-x-auto no-scrollbar pb-1 shrink-0">
             <button onclick="switchP2Day('mon')" id="btn-p2-mon" class="p2-day-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-black text-black shrink-0">Mon</button>
             <button onclick="switchP2Day('tue')" id="btn-p2-tue" class="p2-day-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-transparent text-[#555555] shrink-0">Tue</button>
             <button onclick="switchP2Day('wed')" id="btn-p2-wed" class="p2-day-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-transparent text-[#555555] shrink-0">Wed</button>
@@ -810,343 +820,14 @@
             <button onclick="switchP2Day('sat')" id="btn-p2-sat" class="p2-day-btn px-3 py-1 text-[10px] font-bold uppercase border-b-2 border-transparent text-[#555555] shrink-0">Sat</button>
           </div>
 
-          <!-- MONDAY VIEW -->
-          <div id="p2-day-mon" class="p2-day-view space-y-4">
-            <div>
-              <div class="bg-black text-white px-3 py-1 flex justify-between text-[9px] font-bold uppercase tracking-widest">
-                <span>PHASE 2 // DAY 01</span>
-                <span>LOWER STRENGTH + SPRINT INTENSITY</span>
-                <span>WEEKS 6-10</span>
-              </div>
-              <h3 class="text-xl font-black uppercase mt-2 tracking-tight">Absolute Force Peak</h3>
-            </div>
-            
-            <table class="w-full text-left text-xs">
-              <thead>
-                <tr class="text-[9px] uppercase tracking-wider text-[#555555] border-b border-[#CCCCCC]">
-                  <th class="py-1 w-6">Done</th>
-                  <th class="py-1">EXERCISE</th>
-                  <th class="py-1 text-center w-12">SETS</th>
-                  <th class="py-1 text-center w-12">REPS</th>
-                  <th class="py-1 pl-4">NOTES</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-[#E5E5E5]">
-                <tr>
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold">I. Back Squat</td>
-                  <td class="py-2 text-center monospace">5</td>
-                  <td class="py-2 text-center monospace">5</td>
-                  <td class="py-2 pl-4 text-[#555555]">Increase load from Phase 1</td>
-                </tr>
-                <tr>
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold">II. Romanian Deadlift (RDL)</td>
-                  <td class="py-2 text-center monospace">4</td>
-                  <td class="py-2 text-center monospace">6</td>
-                  <td class="py-2 pl-4 text-[#555555]">Higher density force focus</td>
-                </tr>
-                <tr>
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold">III. Reverse Lunge</td>
-                  <td class="py-2 text-center monospace">3</td>
-                  <td class="py-2 text-center monospace">8</td>
-                  <td class="py-2 pl-4 text-[#555555]">Glute load optimization</td>
-                </tr>
-                <tr>
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold">IV. Standing Calf Raise</td>
-                  <td class="py-2 text-center monospace">4</td>
-                  <td class="py-2 text-center monospace">20</td>
-                  <td class="py-2 pl-4 text-[#555555]">Stretch load parameters</td>
-                </tr>
-                <tr class="bg-neutral-50">
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold text-neutral-800">V. Hanging Leg Raise</td>
-                  <td class="py-2 text-center monospace">4</td>
-                  <td class="py-2 text-center monospace">15</td>
-                  <td class="py-2 pl-4 text-[#555555]">Full leg extension to bar height</td>
-                </tr>
-                <tr class="bg-neutral-50">
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold text-neutral-800">VI. Plank</td>
-                  <td class="py-2 text-center monospace">4</td>
-                  <td class="py-2 text-center monospace">60s</td>
-                  <td class="py-2 pl-4 text-[#555555]">Continuous abdominal squeeze</td>
-                </tr>
-                <tr class="bg-black text-white">
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-white"></td>
-                  <td class="py-2 font-bold">VII. SPEED: Sprints</td>
-                  <td class="py-2 text-center monospace">10</td>
-                  <td class="py-2 text-center monospace">20m</td>
-                  <td class="py-2 pl-4 text-neutral-300">Absolute acceleration intent</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- TUESDAY VIEW -->
-          <div id="p2-day-tue" class="p2-day-tue hidden space-y-4">
-            <div>
-              <div class="bg-black text-white px-3 py-1 flex justify-between text-[9px] font-bold uppercase tracking-widest">
-                <span>PHASE 2 // DAY 02</span>
-                <span>UPPER FORCE INTENSITY + RECOVERY JUMPS</span>
-                <span>WEEKS 6-10</span>
-              </div>
-              <h3 class="text-xl font-black uppercase mt-2 tracking-tight">Upper Body Absolute Loading</h3>
-            </div>
-            <table class="w-full text-left text-xs">
-              <thead>
-                <tr class="text-[9px] uppercase tracking-wider text-[#555555] border-b border-[#CCCCCC]">
-                  <th class="py-1 w-6">Done</th>
-                  <th class="py-1">EXERCISE</th>
-                  <th class="py-1 text-center w-12">SETS</th>
-                  <th class="py-1 text-center w-12">REPS</th>
-                  <th class="py-1 pl-4">NOTES</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-[#E5E5E5]">
-                <tr>
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold">I. Bench Press</td>
-                  <td class="py-2 text-center monospace">5</td>
-                  <td class="py-2 text-center monospace">5</td>
-                  <td class="py-2 pl-4 text-[#555555]">RPE 8.5+ output</td>
-                </tr>
-                <tr>
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold">II. Weighted Pull-Up</td>
-                  <td class="py-2 text-center monospace">5</td>
-                  <td class="py-2 text-center monospace">5</td>
-                  <td class="py-2 pl-4 text-[#555555]">Increase hip belt density</td>
-                </tr>
-                <tr>
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold">III. Incline Press</td>
-                  <td class="py-2 text-center monospace">4</td>
-                  <td class="py-2 text-center monospace">8</td>
-                  <td class="py-2 pl-4 text-[#555555]">Heavy dumbbell structural work</td>
-                </tr>
-                <tr>
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold">IV. Row of Choice</td>
-                  <td class="py-2 text-center monospace">4</td>
-                  <td class="py-2 text-center monospace">8</td>
-                  <td class="py-2 pl-4 text-[#555555]">Unilateral DB or T-Bar loading</td>
-                </tr>
-                <tr class="bg-neutral-50">
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold text-neutral-800">V. ATHLETIC: Barbell Grip Holds</td>
-                  <td class="py-2 text-center monospace">3</td>
-                  <td class="py-2 text-center monospace">30s</td>
-                  <td class="py-2 pl-4 text-[#555555]">Double overhand deadlift lock holds</td>
-                </tr>
-                <tr class="bg-black text-white">
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-white"></td>
-                  <td class="py-2 font-bold">VI. CONDITIONING: Sprinter Bounds</td>
-                  <td class="py-2 text-center monospace">12</td>
-                  <td class="py-2 text-center monospace">Rnds</td>
-                  <td class="py-2 pl-4 text-neutral-300">20s Bike Sprint // 60s Recovery Walk</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- WEDNESDAY VIEW -->
-          <div id="p2-day-wed" class="p2-day-wed hidden space-y-4">
-            <div>
-              <div class="bg-black text-white px-3 py-1 flex justify-between text-[9px] font-bold uppercase tracking-widest">
-                <span>PHASE 2 // DAY 03</span>
-                <span>DECOMPRESSION MATRIX</span>
-                <span>WEEKS 6-10</span>
-              </div>
-              <h3 class="text-xl font-black uppercase mt-2 tracking-tight">Active Neural Recovery</h3>
-            </div>
-            <div class="space-y-4">
-              <div class="bg-neutral-50 p-4 border border-[#E5E5E5] space-y-2 rounded-lg">
-                <span class="monospace text-[10px] font-bold uppercase text-[#555555]">UPGRADE: COGNITIVE ZONE 2 CARDIO</span>
-                <p class="text-xs text-black font-semibold">Duration: 60 minutes of low-intensity walking or light cycling</p>
-                <p class="text-[11px] text-[#555555] leading-relaxed">
-                  Focus entirely on keeping respiratory mechanics exclusively nasal. This promotes lymphatic clearance of systemic micro-cellular waste from heavy lifting cycles.
-                </p>
-              </div>
-              <div class="border border-[#E5E5E5] p-4 bg-white space-y-2 text-xs text-[#555555] rounded-lg">
-                <span class="monospace text-[10px] font-bold uppercase text-black block border-b border-black pb-1">SOFT TISSUE REPAIR</span>
-                <p>&bull; <strong>Mobility Flow:</strong> 20 minutes structural joint decompression.</p>
-                <p>&bull; <strong>Foam Rolling:</strong> Direct myofascial tissue release (Lats, Quads, Calves).</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- THURSDAY VIEW -->
-          <div id="p2-day-thu" class="p2-day-view hidden space-y-4">
-            <div>
-              <div class="bg-black text-white px-3 py-1 flex justify-between text-[9px] font-bold uppercase tracking-widest">
-                <span>PHASE 2 // DAY 04</span>
-                <span>LOWER VELOCITY + POWER EXPANSION</span>
-                <span>WEEKS 6-10</span>
-              </div>
-              <h3 class="text-xl font-black uppercase mt-2 tracking-tight">Maximum Velocity Peak</h3>
-            </div>
-            <table class="w-full text-left text-xs">
-              <thead>
-                <tr class="text-[9px] uppercase tracking-wider text-[#555555] border-b border-[#CCCCCC]">
-                  <th class="py-1 w-6">Done</th>
-                  <th class="py-1">EXERCISE</th>
-                  <th class="py-1 text-center w-12">SETS</th>
-                  <th class="py-1 text-center w-12">REPS</th>
-                  <th class="py-1 pl-4">NOTES</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-[#E5E5E5]">
-                <tr>
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold">I. Power Clean</td>
-                  <td class="py-2 text-center monospace">5</td>
-                  <td class="py-2 text-center monospace">3</td>
-                  <td class="py-2 pl-4 text-[#555555]">Explosive pull from floor coordinates</td>
-                </tr>
-                <tr>
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold">II. Box Jump</td>
-                  <td class="py-2 text-center monospace">5</td>
-                  <td class="py-2 text-center monospace">3</td>
-                  <td class="py-2 pl-4 text-[#555555]">Add box height from Phase 1</td>
-                </tr>
-                <tr>
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold">III. Front Squat</td>
-                  <td class="py-2 text-center monospace">4</td>
-                  <td class="py-2 text-center monospace">4</td>
-                  <td class="py-2 pl-4 text-[#555555]">Absolute front chain bracing</td>
-                </tr>
-                <tr>
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold">IV. Broad Jump</td>
-                  <td class="py-2 text-center monospace">5</td>
-                  <td class="py-2 text-center monospace">3</td>
-                  <td class="py-2 pl-4 text-[#555555]">Focus on long horizontal float</td>
-                </tr>
-                <tr class="bg-neutral-50">
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold text-neutral-800">V. UPGRADE: Med Ball Throws</td>
-                  <td class="py-2 text-center monospace">3</td>
-                  <td class="py-2 text-center monospace">8</td>
-                  <td class="py-2 pl-4 text-[#555555]">Explosive lateral rotational core throws</td>
-                </tr>
-                <tr class="bg-black text-white">
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-white"></td>
-                  <td class="py-2 font-bold">VI. SPEED: 40m Sprints</td>
-                  <td class="py-2 text-center monospace">6</td>
-                  <td class="py-2 text-center monospace">Runs</td>
-                  <td class="py-2 pl-4 text-neutral-300">Explosive acceleration into pure velocity</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- FRIDAY VIEW -->
-          <div id="p2-day-fri" class="p2-day-view hidden space-y-4">
-            <div>
-              <div class="bg-black text-white px-3 py-1 flex justify-between text-[9px] font-bold uppercase tracking-widest">
-                <span>PHASE 2 // DAY 05</span>
-                <span>UPPER EXPLOSION + HYPERTROPHY</span>
-                <span>WEEKS 6-10</span>
-              </div>
-              <h3 class="text-xl font-black uppercase mt-2 tracking-tight">Kinetic Kinetic Velocity</h3>
-            </div>
-            <table class="w-full text-left text-xs">
-              <thead>
-                <tr class="text-[9px] uppercase tracking-wider text-[#555555] border-b border-[#CCCCCC]">
-                  <th class="py-1 w-6">Done</th>
-                  <th class="py-1">EXERCISE</th>
-                  <th class="py-1 text-center w-12">SETS</th>
-                  <th class="py-1 text-center w-12">REPS</th>
-                  <th class="py-1 pl-4">NOTES</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-[#E5E5E5]">
-                <tr>
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold">I. Push Press</td>
-                  <td class="py-2 text-center monospace">5</td>
-                  <td class="py-2 text-center monospace">3</td>
-                  <td class="py-2 pl-4 text-[#555555]">Peak leg drive explosion</td>
-                </tr>
-                <tr>
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold">II. Weighted Dip</td>
-                  <td class="py-2 text-center monospace">4</td>
-                  <td class="py-2 text-center monospace">8</td>
-                  <td class="py-2 pl-4 text-[#555555]">Chest and shoulder structural shield</td>
-                </tr>
-                <tr>
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold">III. Pull-Up</td>
-                  <td class="py-2 text-center monospace">4</td>
-                  <td class="py-2 text-center monospace">8</td>
-                  <td class="py-2 pl-4 text-[#555555]">Strict deadhang, heavy eccentric</td>
-                </tr>
-                <tr>
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold">IV. Dumbbell Press</td>
-                  <td class="py-2 text-center monospace">3</td>
-                  <td class="py-2 text-center monospace">10</td>
-                  <td class="py-2 pl-4 text-[#555555]">Control shoulder stability</td>
-                </tr>
-                <tr class="bg-neutral-50">
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold text-neutral-800">V. Ab Wheel Rollout</td>
-                  <td class="py-2 text-center monospace">4</td>
-                  <td class="py-2 text-center monospace">12</td>
-                  <td class="py-2 pl-4 text-[#555555]">Strict neutral spine holding</td>
-                </tr>
-                <tr class="bg-neutral-50">
-                  <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
-                  <td class="py-2 font-bold text-neutral-800">VI. Side Plank</td>
-                  <td class="py-2 text-center monospace">4</td>
-                  <td class="py-2 text-center monospace">60s</td>
-                  <td class="py-2 pl-4 text-[#555555]">Extend leverage limits</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- SATURDAY VIEW -->
-          <div id="p2-day-sat" class="p2-day-view hidden space-y-4">
-            <div>
-              <div class="bg-black text-white px-3 py-1 flex justify-between text-[9px] font-bold uppercase tracking-widest">
-                <span>PHASE 2 // DAY 06</span>
-                <span>WORK ENGINE INTENSITY</span>
-                <span>WEEKS 6-10</span>
-              </div>
-              <h3 class="text-xl font-black uppercase mt-2 tracking-tight">Kinetic Shield Conditioning</h3>
-            </div>
-            
-            <div class="space-y-4">
-              <div class="bg-neutral-50 p-4 border border-[#E5E5E5] space-y-2 rounded-lg">
-                <span class="monospace text-[10px] font-bold uppercase text-[#555555]">UPGRADE: LOADED CARRIES</span>
-                <p class="text-xs text-black font-semibold">Heavy Farmer Walk: 6 Sets &times; 40 Meters</p>
-                <p class="text-[10px] text-[#555555]">Increase load from Phase 1. Forces maximum trunk core rigidity and dynamic breathing parameters.</p>
-              </div>
-
-              <div class="border border-black p-4 bg-white space-y-3 rounded-lg">
-                <span class="monospace text-[10px] font-bold uppercase text-black block border-b border-black pb-1">CONDITIONING BLOCKS (6 ROUNDS)</span>
-                <table class="w-full text-left text-xs">
-                  <tbody class="divide-y divide-[#E5E5E5]">
-                    <tr><td class="py-2 font-bold">500m Row</td><td class="py-2 text-right monospace">Hard Pace</td></tr>
-                    <tr><td class="py-2 font-bold">20 KB Swings</td><td class="py-2 text-right monospace">Snappy hip extension</td></tr>
-                    <tr><td class="py-2 font-bold">15 Burpees</td><td class="py-2 text-right monospace">Dynamic drop & jump</td></tr>
-                    <tr><td class="py-2 font-bold">20 Push-Ups</td><td class="py-2 text-right monospace">Full extension plank hold</td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+          <!-- DYNAMIC CONTENT CONTAINER -->
+          <div id="p2-dynamic-view" class="overflow-y-auto no-scrollbar flex-grow space-y-4 pr-1 mt-1">
+             <!-- JS WILL RENDER TABLES HERE -->
           </div>
 
         </div>
 
-        <div class="flex justify-between items-center border-t border-[#CCCCCC] pt-3 mt-auto">
+        <div class="flex justify-between items-center border-t border-[#CCCCCC] pt-3 mt-auto shrink-0">
           <span class="monospace text-[10px] font-bold text-[#555555]">PAGE 4</span>
           <span class="monospace text-[10px] font-bold text-[#555555]">ABHISHEK'S ATHLETIC</span>
         </div>
@@ -1311,7 +992,129 @@
       }
     }
 
+    // --- NEW PHASE 2 DYNAMIC LOGIC ---
+    let currentP2Week = 6;
+    let currentP2Day = 'mon';
+
+    const p2Workouts = {
+      6: {
+        mon: { name: "LOWER // BASE FORCE", subtitle: "LOWER STRENGTH + SPRINT INTENSITY", ex: [["Back Squat","5","5","RPE 7.5"], ["RDL","4","8","Control"], ["Leg Press","3","12","Continuous tension"], ["Calf Raise","4","20","Full ROM"], ["Plank","3","60s","Braced"]]},
+        tue: { name: "UPPER // BASE FORCE", subtitle: "UPPER FORCE INTENSITY", ex: [["Bench Press","5","5","RPE 7.5"], ["Weighted Pull-Up","4","6","Strict"], ["Incline DB Press","3","10","Deep stretch"], ["Chest Sup. Row","4","10","Squeeze"], ["Face Pull","3","15","Prehab"]]},
+        wed: { name: "DECOMPRESSION", subtitle: "ACTIVE RECOVERY", text: "60 mins Zone 2 Cycling (Nasal breathing). 20 mins full body mobility flow." },
+        thu: { name: "LOWER // SPEED & POWER", subtitle: "LOWER VELOCITY", ex: [["Power Clean","5","3","Explosive"], ["Box Jump","5","3","Max height"], ["Front Squat","4","5","Fast concentric"], ["Broad Jump","4","3","Distance"], ["Suitcase Carry","3","30m","Anti-lateral flex"]]},
+        fri: { name: "UPPER // POWER & HYPERTROPHY", subtitle: "UPPER EXPLOSION", ex: [["Push Press","5","4","Drive hard"], ["Weighted Dip","4","8","Heavy"], ["Pull-Up","4","8","Bodyweight speed"], ["DB Shoulder Press","3","10","Strict"], ["Ab Wheel","3","12","Core control"]]},
+        sat: { name: "CONDITIONING // CARRIES", subtitle: "WORK ENGINE", text: "Heavy Farmer Walk: 6 x 40m.<br>Engine: 5 Rounds of 500m Row, 20 KB Swings, 15 Push-ups." }
+      },
+      7: {
+        mon: { name: "LOWER // INTENSIFICATION", subtitle: "LOWER STRENGTH + SPRINT INTENSITY", ex: [["Back Squat","5","4","RPE 8.0"], ["RDL","4","6","Heavy load"], ["Bulgarian Split Squat","3","8/leg","Dumbbells"], ["Seated Calf Raise","4","15","Pause at bottom"], ["Hanging Leg Raise","3","12","Strict"]]},
+        tue: { name: "UPPER // INTENSIFICATION", subtitle: "UPPER FORCE INTENSITY", ex: [["Bench Press","5","4","RPE 8.0"], ["Weighted Pull-Up","5","5","Heavy"], ["Incline DB Press","4","8","Heavy DBs"], ["Pendlay Row","4","6","Explosive off floor"], ["Barbell Hold","3","30s","Grip work"]]},
+        wed: { name: "DECOMPRESSION", subtitle: "ACTIVE RECOVERY", text: "45 mins active recovery walk or swim. Foam rolling major muscle groups." },
+        thu: { name: "LOWER // VELOCITY PEAK", subtitle: "LOWER VELOCITY", ex: [["Hang Clean","5","3","Fast catch"], ["Seated Box Jump","5","3","Remove stretch reflex"], ["Front Squat","4","4","Heavy & fast"], ["Med Ball Throws","4","5","Rotational power"], ["Pallof Press","3","12","Core stability"]]},
+        fri: { name: "UPPER // KINETIC VELOCITY", subtitle: "UPPER EXPLOSION", ex: [["Push Press","5","3","Max power"], ["Weighted Dip","4","6","Heavy"], ["Explosive Pull-Up","4","5","Chest to bar"], ["Lateral Raise","3","15","Shoulder health"], ["Side Plank","3","45s","Weighted"]]},
+        sat: { name: "CONDITIONING // LACTIC TOLERANCE", subtitle: "WORK ENGINE", text: "Sandbag Carry: 5 x 50m.<br>Engine: 6 Rounds of 400m Run, 15 Burpees, 10 Jump Squats." }
+      },
+      8: {
+        mon: { name: "LOWER // MAXIMAL LOAD", subtitle: "LOWER STRENGTH + SPRINT INTENSITY", ex: [["Back Squat","5","3","RPE 8.5-9"], ["Deficit RDL","4","5","Extended ROM"], ["Hack Squat","3","8","Heavy quad focus"], ["Standing Calf Raise","4","12","Heavy"], ["Weighted Plank","3","45s","20kg plate"]]},
+        tue: { name: "UPPER // MAXIMAL LOAD", subtitle: "UPPER FORCE INTENSITY", ex: [["Bench Press","5","3","RPE 8.5-9"], ["Weighted Pull-Up","5","4","Max weight"], ["Weighted Dip","4","6","Heavy tricep focus"], ["T-Bar Row","4","6","Heavy back building"], ["Neck Harness","3","15","Protection"]]},
+        wed: { name: "DECOMPRESSION", subtitle: "ACTIVE RECOVERY", text: "60 mins Zone 2 Jogging. PNF Stretching routine for hips and shoulders." },
+        thu: { name: "LOWER // CONTRAST POWER", subtitle: "LOWER VELOCITY", ex: [["Back Squat + Box Jump","4","3+3","Contrast super-set"], ["Power Snatch","4","3","Technical speed"], ["Front Squat","3","4","Over-speed concentric"], ["Sled Push","4","20m","Max effort"]]},
+        fri: { name: "UPPER // CONTRAST POWER", subtitle: "UPPER EXPLOSION", ex: [["Bench Press + Plyo Pushup","4","3+5","Contrast super-set"], ["Push Press","4","3","Explosive"], ["Speed Pull-Up","4","5","Banded assistance"], ["Medicine Ball Slams","4","8","Max force"]]},
+        sat: { name: "CONDITIONING // ANAEROBIC THRESHOLD", subtitle: "WORK ENGINE", text: "Yoke Walk or Heavy Farmer: 6 x 30m.<br>Engine: 10x 100m Hill Sprints, walk down recovery." }
+      },
+      9: {
+        mon: { name: "LOWER // PEAK FORCE", subtitle: "LOWER STRENGTH + SPRINT INTENSITY", ex: [["Back Squat","4","2","RPE 9-9.5"], ["Heavy RDL","3","4","Max load"], ["Walking Lunges","3","6/leg","Heavy DBs"], ["Calf Raise","3","15","Tempo"], ["Toes to Bar","3","10","Core"]]},
+        tue: { name: "UPPER // PEAK FORCE", subtitle: "UPPER FORCE INTENSITY", ex: [["Bench Press","4","2","RPE 9-9.5"], ["Weighted Pull-Up","4","3","Max load"], ["Incline Barbell Press","3","5","Heavy"], ["One Arm DB Row","3","6/arm","Heavy pulling"], ["Farmers Hold","3","40s","Grip"]]},
+        wed: { name: "DECOMPRESSION", subtitle: "ACTIVE RECOVERY", text: "Active rest. 30 mins light cycle. Sauna / Cold exposure if available." },
+        thu: { name: "LOWER // NEURAL SPEED", subtitle: "LOWER VELOCITY", ex: [["Power Clean","4","2","Peak velocity"], ["Depth Jumps","4","3","Reactive power"], ["Speed Squat","4","3","Accommodating resistance"], ["40m Sprints","5","1","Full recovery"]]},
+        fri: { name: "UPPER // NEURAL SPEED", subtitle: "UPPER EXPLOSION", ex: [["Speed Bench","4","3","Fast bar path"], ["Push Press","4","2","Max weight overhead"], ["Plyo Pull-ups","4","4","Clapping if possible"], ["Landmine Press","3","6/arm","Rotational drive"]]},
+        sat: { name: "CONDITIONING // PEAK OUTPUT", subtitle: "WORK ENGINE", text: "Suitcase Carry: 4 x 40m/side.<br>Engine: Assault Bike 30s All-Out / 90s Rest x 8 Rounds." }
+      },
+      10: {
+        mon: { name: "LOWER // 1RM TEST & DELOAD", subtitle: "LOWER STRENGTH", ex: [["Back Squat","-","1RM","Work up to true 1RM"], ["RDL","2","8","Light deload"], ["Leg Extension","2","15","Blood flow"], ["Plank","2","45s","Core"]]},
+        tue: { name: "UPPER // 1RM TEST & DELOAD", subtitle: "UPPER FORCE", ex: [["Bench Press","-","1RM","Work up to true 1RM"], ["Pull-Up","2","Max","Bodyweight max test"], ["DB Press","2","10","Light"], ["Seated Row","2","12","Blood flow"]]},
+        wed: { name: "DECOMPRESSION", subtitle: "ACTIVE RECOVERY", text: "Total Rest or light 30 min walk. Celebrate phase completion." },
+        thu: { name: "LOWER // ATHLETIC TEST", subtitle: "LOWER VELOCITY", ex: [["Vertical Jump","-","Max","Test max height"], ["Broad Jump","-","Max","Test max distance"], ["Front Squat","3","5","50% 1RM Deload"], ["20m Sprint","4","1","Timed PRs"]]},
+        fri: { name: "UPPER // ATHLETIC TEST", subtitle: "UPPER EXPLOSION", ex: [["Strict Overhead Press","-","1RM","Test 1RM"], ["Medicine Ball Throw","-","Max","Distance test"], ["Push-Ups","1","Max","AMRAP in 2 mins"], ["Light Bicep/Tricep","2","15","Pump"]]},
+        sat: { name: "CONDITIONING // FINAL EXAM", subtitle: "WORK ENGINE", text: "1 Mile Run for Time.<br>100 Kettlebell Swings for Time.<br>Rest and recover for next cycle." }
+      }
+    };
+
+    function renderP2View() {
+      const container = document.getElementById('p2-dynamic-view');
+      if(!container) return;
+      const data = p2Workouts[currentP2Week][currentP2Day];
+      
+      const romanNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+      let dayNum = ['mon','tue','wed','thu','fri','sat'].indexOf(currentP2Day) + 1;
+      
+      let html = `
+        <div>
+          <div class="bg-black text-white px-3 py-1 flex justify-between text-[9px] font-bold uppercase tracking-widest">
+            <span>PHASE 2 // DAY 0${dayNum}</span>
+            <span>${data.subtitle}</span>
+            <span>WEEK ${currentP2Week}</span>
+          </div>
+          <h3 class="text-xl font-black uppercase mt-2 tracking-tight">${data.name}</h3>
+        </div>
+      `;
+
+      if (data.ex) {
+        let rows = data.ex.map((ex, idx) => `
+          <tr class="${idx % 2 !== 0 ? 'bg-neutral-50' : ''}">
+            <td class="py-2"><input type="checkbox" class="w-3.5 h-3.5 accent-black"></td>
+            <td class="py-2 font-bold">${romanNumerals[idx]}. ${ex[0]}</td>
+            <td class="py-2 text-center monospace">${ex[1]}</td>
+            <td class="py-2 text-center monospace">${ex[2]}</td>
+            <td class="py-2 pl-4 text-[#555555]">${ex[3]}</td>
+          </tr>
+        `).join('');
+        
+        html += `
+          <table class="w-full text-left text-xs mt-4">
+            <thead>
+              <tr class="text-[9px] uppercase tracking-wider text-[#555555] border-b border-[#CCCCCC]">
+                <th class="py-1 w-6">Done</th>
+                <th class="py-1">EXERCISE</th>
+                <th class="py-1 text-center w-12">SETS</th>
+                <th class="py-1 text-center w-12">REPS</th>
+                <th class="py-1 pl-4">NOTES</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#E5E5E5]">
+              ${rows}
+            </tbody>
+          </table>
+        `;
+      } else if (data.text) {
+         html += `
+            <div class="bg-neutral-50 p-4 border border-[#E5E5E5] space-y-2 rounded-lg mt-4">
+              <span class="monospace text-[10px] font-bold uppercase text-[#555555]">PROTOCOL // WEEK ${currentP2Week}</span>
+              <p class="text-xs text-black font-medium leading-relaxed">${data.text}</p>
+            </div>
+         `;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function switchP2Week(week) {
+      currentP2Week = week;
+      const btns = document.querySelectorAll('.p2-week-btn');
+      btns.forEach(btn => {
+        btn.classList.remove('border-black', 'text-black');
+        btn.classList.add('border-transparent', 'text-[#555555]');
+      });
+      const targetBtn = document.getElementById(`btn-p2-w${week}`);
+      if (targetBtn) {
+        targetBtn.classList.add('border-black', 'text-black');
+        targetBtn.classList.remove('border-transparent', 'text-[#555555]');
+      }
+      document.getElementById('p2-header-week').textContent = `PHASE 2 // WEEK ${week}`;
+      renderP2View();
+    }
+
     function switchP2Day(day) {
+      currentP2Day = day;
       const btns = document.querySelectorAll('.p2-day-btn');
       btns.forEach(btn => {
         btn.classList.remove('border-black', 'text-black');
@@ -1322,14 +1125,9 @@
         targetBtn.classList.add('border-black', 'text-black');
         targetBtn.classList.remove('border-transparent', 'text-[#555555]');
       }
-
-      const views = document.querySelectorAll('.p2-day-view');
-      views.forEach(view => view.classList.add('hidden'));
-      const targetView = document.getElementById(`p2-day-${day}`);
-      if (targetView) {
-        targetView.classList.remove('hidden');
-      }
+      renderP2View();
     }
+    // --- END NEW PHASE 2 DYNAMIC LOGIC ---
 
     // Continuous print preview generator
     function toggleViewMode() {
@@ -1630,10 +1428,12 @@
     window.switchTab = switchTab;
     window.switchP1Day = switchP1Day;
     window.switchP2Day = switchP2Day;
+    window.switchP2Week = switchP2Week;
     window.toggleViewMode = toggleViewMode;
     window.runCustomCalc = runCustomCalc;
 
     window.onload = function() {
+      renderP2View();
       initPlatformEngine();
     }
   </script>
